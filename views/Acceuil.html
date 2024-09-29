@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil</title>
+    <link rel="stylesheet" href="/css/Acceuil.css">
+</head>
+<body>
+    <h2>Bienvenue !</h2>
+    <h3>Liste des utilisateurs :</h3>
+    <ul id="users-list"></ul>
+
+    <script>
+      // Remplir la liste des utilisateurs dynamiquement
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch('/dashboard')
+          .then(response => response.text())
+          .then(html => {
+            document.getElementById('users-list').innerHTML = html;
+          })
+          .catch(error => console.error('Erreur lors du chargement des utilisateurs:', error));
+      });
+    </script>
+</body>
+</html>
