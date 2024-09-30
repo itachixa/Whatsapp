@@ -7,6 +7,7 @@ const session = require('express-session');
 
 const app = express();
 const port = 3000;
+ 
 
 // Configuration de la chaîne de connexion PostgreSQL
 const pool = new Pool({
