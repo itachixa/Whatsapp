@@ -14,7 +14,7 @@
     ],
     "headers": [
       {
-        "source": "/css/(.*)",
+        "source": "pubic/css/(.*)",
         "headers": [
           {
             "key": "Content-Type",
