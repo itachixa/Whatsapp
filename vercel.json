@@ -11,18 +11,8 @@
         "src": "/(.*)",
         "dest": "app.js"
       }
-    ],
-    "headers": [
-      {
-        "source": "pubic/css/(.*)",
-        "headers": [
-          {
-            "key": "Content-Type",
-            "value": "text/css"
-          }
-        ]
-      }
     ]
+    
   }
 
  

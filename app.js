@@ -16,7 +16,7 @@ const pool = new Pool({
 
 // Middleware pour parser les données des formulaires
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static('public/css')); // Pour servir les fichiers CSS et HTML
+app.use(express.static('public')); // Pour servir les fichiers CSS et HTML
 
 // Configuration des sessions
 app.use(session({
