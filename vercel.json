@@ -1,0 +1,27 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "app.js", 
+        "use": "@vercel/node"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "app.js"
+      }
+    ],
+    "headers": [
+    {
+      "source": "/css/(.*)",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/css"
+        }
+      ]
+    }
+    ]
+    
+  }
