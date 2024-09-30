@@ -14,7 +14,7 @@ const pool = new Pool({
   connectionString: 'postgresql://neondb_owner:JXTGM9RE1BjH@ep-late-bread-a29sphep-pooler.eu-central-1.aws.neon.tech/utilisateursdb?sslmode=require',
   ssl: { rejectUnauthorized: false }
 });
-
+app.use(bodyParser.urlencoded({ extended: false }));
 // Middleware pour parser les données des formulaires
 app.use(express.static('public')); // Pour servir les fichiers CSS et HTML
 
