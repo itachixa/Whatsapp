@@ -7,15 +7,15 @@ const session = require('express-session');
 
 const app = express();
 const port = 3000;
- 
 
 // Configuration de la chaîne de connexion PostgreSQL
 const pool = new Pool({
   connectionString: 'postgresql://neondb_owner:JXTGM9RE1BjH@ep-late-bread-a29sphep-pooler.eu-central-1.aws.neon.tech/utilisateursdb?sslmode=require',
   ssl: { rejectUnauthorized: false }
 });
+
+// Middleware pour traiter les données POST
 app.use(bodyParser.urlencoded({ extended: false }));
-// Middleware pour parser les données des formulaires
 app.use(express.static('public')); // Pour servir les fichiers CSS et HTML
 
 // Configuration des sessions
@@ -23,7 +23,7 @@ app.use(session({
   secret: 'votre_secret', // Change ceci avec une clé secrète
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false } // Mettre à true si vous utilisez HTTPS
+  cookie: { secure: false } // Utilise true si HTTPS est activé
 }));
 
 // Route pour afficher la page d'accueil
@@ -38,6 +38,10 @@ app.get('/register', (req, res) => {
 
 // Route pour afficher la page de connexion
 app.get('/login', (req, res) => {
+  // Si l'utilisateur est déjà connecté, le rediriger vers la page utilisateurs
+  if (req.session.userId) {
+    return res.redirect('/users');
+  }
   res.sendFile(path.join(__dirname, 'views', 'login.html'));
 });
 
@@ -78,6 +82,7 @@ app.post('/login', async (req, res) => {
       return res.send('Email ou mot de passe incorrect.');
     }
 
+    // Connecter l'utilisateur et stocker son ID dans la session
     req.session.userId = user.id;
     res.redirect('/users');
   } catch (error) {
