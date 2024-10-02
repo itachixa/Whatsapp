@@ -1,33 +1,106 @@
+/* public/styles.css */
+
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #eef2f3;
-    padding: 50px;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
-h2, h3 {
+.container {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 600px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+h2 {
     text-align: center;
     color: #333;
+    margin-bottom: 20px;
 }
 
-ul {
+#users-list {
     list-style-type: none;
     padding: 0;
-    max-width: 600px;
-    margin: 0 auto;
+    margin: 0;
 }
 
-li {
-    background-color: white;
-    padding: 15px;
-    margin-bottom: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+.user-item {
+    display: flex;
+    align-items: center;
+    background-color: #f9f9f9;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
 }
 
-a {
+.user-item:hover {
+    background-color: #e1f5fe;
+}
+
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 15px;
+    border: 2px solid #25D366;
+}
+
+.user-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.username {
+    font-size: 1.2em;
+    color: #075E54;
+    margin-bottom: 5px;
+}
+
+.send-message-btn {
+    align-self: flex-start;
+    background-color: #25D366;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 20px;
     text-decoration: none;
-    color: #007bff;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
 }
 
-a:hover {
-    text-decoration: underline;
+.send-message-btn:hover {
+    background-color: #128C7E;
+}
+
+/* Responsivité */
+@media (max-width: 600px) {
+    .container {
+        padding: 15px;
+    }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+        margin-right: 10px;
+    }
+
+    .username {
+        font-size: 1em;
+    }
+
+    .send-message-btn {
+        padding: 6px 10px;
+        font-size: 0.8em;
+    }
 }

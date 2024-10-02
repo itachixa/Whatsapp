@@ -4,56 +4,91 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accueil</title>
-    <link rel="stylesheet" href="">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef2f3;
+            padding: 50px;
+        }
+
+        h2, h3 {
+            text-align: center;
+            color: #333;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            width: 300px; /* Limiter la largeur de la liste à gauche */
+        }
+
+        li {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ccc; /* Ajoute une bordure */
+            border-radius: 8px; /* Ajoute des coins arrondis */
+            display: flex;
+            align-items: center;
+        }
+
+        /* Si vous souhaitez ajouter une image d'utilisateur */
+        li img {
+            border-radius: 50%;
+            margin-right: 15px;
+            width: 40px;
+            height: 40px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Style pour contenir la liste sur le côté gauche */
+        .container {
+            display: flex;
+            justify-content: flex-start; /* Aligner à gauche */
+        }
+    </style>
 </head>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #eef2f3;
-    padding: 50px;
-}
-
-h2, h3 {
-    text-align: center;
-    color: #333;
-}
-
-ul {
-    list-style-type: none;
-    padding: 0;
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-li {
-    background-color: white;
-    padding: 15px;
-    margin-bottom: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-a {
-    text-decoration: none;
-    color: #007bff;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-</style>
 <body>
     <h2>Bienvenue !</h2>
     <h3>Liste des utilisateurs :</h3>
-    <ul id="users-list"></ul>
+    
+    <div class="container">
+        <ul id="users-list"></ul>
+    </div>
 
     <script>
       // Remplir la liste des utilisateurs dynamiquement
       document.addEventListener("DOMContentLoaded", () => {
         fetch('/dashboard')
-          .then(response => response.text())
-          .then(html => {
-            document.getElementById('users-list').innerHTML = html;
+          .then(response => response.json()) // Supposons que votre endpoint renvoie du JSON
+          .then(users => {
+            const usersList = document.getElementById('users-list');
+            users.forEach(user => {
+              const li = document.createElement('li');
+
+              // Ajouter une image d'utilisateur (si disponible)
+              const img = document.createElement('img');
+              img.src = user.avatar || 'default-avatar.png'; // Utilisez une image par défaut si l'utilisateur n'en a pas
+              img.alt = `${user.name}'s avatar`;
+
+              // Ajouter le nom de l'utilisateur
+              const span = document.createElement('span');
+              span.textContent = user.name;
+
+              li.appendChild(img);
+              li.appendChild(span);
+
+              usersList.appendChild(li);
+            });
           })
           .catch(error => console.error('Erreur lors du chargement des utilisateurs:', error));
       });
