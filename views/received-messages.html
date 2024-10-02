@@ -1,27 +1,12 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Messages reçus</title>
+  <title>Messages reçus</title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <h2>Messages que vous aves reçus :</h2>
-    <ul id="messagesList"></ul>
-    <a href="/">Retour à l'accueil</a>
-
-    <script>
-        fetch('/api/received-messages')
-        .then(response => response.json())
-        .then(messages => {
-            const messagesList = document.getElementById('messagesList');
-            messages.forEach(msg => {
-                const li = document.createElement('li');
-                li.innerHTML = `<strong>${msg.username}:</strong> ${msg.message} <em>${msg.created_at}</em>`;
-                messagesList.appendChild(li);
-            });
-        });
-    </script>
+  <h1>Vos messages reçus</h1>
+  <!-- Les messages seront affichés ici -->
+  <a href="/users">Retour à la liste des utilisateurs</a>
 </body>
 </html>
-

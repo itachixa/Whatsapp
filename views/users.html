@@ -1,28 +1,14 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Utilisateurs</title>
+  <meta charset="UTF-8">
+  <title>Utilisateurs</title>
 </head>
 <body>
-    <h2>Liste des utilisateurs du site:</h2>
-    <ul id="usersList"></ul>
-    <a href="/received-messages">Voir les messages reçus</a>
-    <a href="/">Retour à l'accueil</a>
-
-    <script>
-        fetch('/api/users')
-        .then(response => response.json())
-        .then(users => {
-            const usersList = document.getElementById('usersList');
-            users.forEach(user => {
-                const li = document.createElement('li');
-                li.innerHTML = `${user.username} - <a href="/send-message?receiverId=${user.id}">Envoyer un message</a>`;
-                usersList.appendChild(li);
-            });
-        });
-    </script>
+  <h2>Liste des utilisateurs :</h2>
+  <ul>
+    <!-- Liste des utilisateurs générée côté serveur -->
+  </ul>
+  <a href="/">Retour à l'accueil</a>
 </body>
 </html>
-

@@ -1,22 +1,14 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Envoyer un message</title>
+  <meta charset="UTF-8">
+  <title>Envoyer un message</title>
 </head>
 <body>
-    <h2>Envoyer un message</h2>
-    <form action="/send-message" method="POST">
-        <input type="hidden" name="receiverId" value="">
-        <textarea name="message" placeholder="Votre message" required></textarea><br><br>
-        <button type="submit">Envoyer</button>
-    </form>
-
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const receiverId = urlParams.get('receiverId');
-        document.querySelector('input[name="receiverId"]').value = receiverId;
-    </script>
+  <h2>Envoyer un message</h2>
+  <form action="/send-message" method="POST">
+    <textarea name="message" placeholder="Votre message" required></textarea><br><br>
+    <button type="submit">Envoyer</button>
+  </form>
 </body>
 </html>

@@ -38,7 +38,6 @@ app.get('/register', (req, res) => {
 
 // Route pour afficher la page de connexion
 app.get('/login', (req, res) => {
-  // Si l'utilisateur est déjà connecté, le rediriger vers la page utilisateurs
   if (req.session.userId) {
     return res.redirect('/users');
   }
@@ -82,7 +81,6 @@ app.post('/login', async (req, res) => {
       return res.send('Email ou mot de passe incorrect.');
     }
 
-    // Connecter l'utilisateur et stocker son ID dans la session
     req.session.userId = user.id;
     res.redirect('/users');
   } catch (error) {
@@ -97,38 +95,12 @@ app.get('/users', async (req, res) => {
     return res.redirect('/login');
   }
 
-  try {
-    const result = await pool.query('SELECT id, username FROM utilisateurs WHERE id != $1', [req.session.userId]);
-    let usersList = '';
-    result.rows.forEach(user => {
-      usersList += `<li>${user.username} - <a href="/send-message?receiverId=${user.id}">Envoyer un message</a></li>`;
-    });
-    res.send(`
-      <h2>Liste des utilisateurs :</h2>
-      <ul>
-        ${usersList}
-      </ul>
-      <a href="/received-messages">Voir les messages reçus</a>
-      <a href="/">Retour à l'accueil</a>
-    `);
-  } catch (error) {
-    console.error('Erreur lors de la récupération des utilisateurs:', error);
-    res.status(500).send('Erreur lors de la récupération des utilisateurs.');
-  }
+  res.sendFile(path.join(__dirname, 'views', 'users.html')); // Cette route affichera le fichier users.html
 });
 
 // Route pour afficher le formulaire d'envoi de message
 app.get('/send-message', async (req, res) => {
-  const { receiverId } = req.query;
-
-  res.send(`
-    <h2>Envoyer un message</h2>
-    <form action="/send-message" method="POST">
-      <input type="hidden" name="receiverId" value="${receiverId}">
-      <textarea name="message" placeholder="Votre message" required></textarea><br><br>
-      <button type="submit">Envoyer</button>
-    </form>
-  `);
+  res.sendFile(path.join(__dirname, 'views', 'send-message.html'));
 });
 
 // Route POST pour envoyer le message
@@ -155,31 +127,7 @@ app.get('/received-messages', async (req, res) => {
     return res.redirect('/login');
   }
 
-  try {
-    const result = await pool.query(`
-      SELECT m.message, m.created_at, u.username 
-      FROM messages m 
-      JOIN utilisateurs u ON m.sender_id = u.id 
-      WHERE m.receiver_id = $1
-      ORDER BY m.created_at DESC
-    `, [req.session.userId]);
-
-    let messagesList = '';
-    result.rows.forEach(msg => {
-      messagesList += `<li><strong>${msg.username}:</strong> ${msg.message} <em>${msg.created_at}</em></li>`;
-    });
-
-    res.send(`
-      <h2>Messages reçus :</h2>
-      <ul>
-        ${messagesList}
-      </ul>
-      <a href="/">Retour à l'accueil</a>
-    `);
-  } catch (error) {
-    console.error('Erreur lors de la récupération des messages reçus:', error);
-    res.status(500).send('Erreur lors de la récupération des messages.');
-  }
+  res.sendFile(path.join(__dirname, 'views', 'received-messages.html'));
 });
 
 // Démarrer le serveur
