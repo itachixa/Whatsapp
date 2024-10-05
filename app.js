@@ -177,6 +177,7 @@ app.get('/messages/:id', async (req, res) => {
           body {
             font-family: Arial, sans-serif;
             margin: 20px;
+             background-image: url(https://img2.wallspic.com/crops/1/1/5/8511/8511-developpement_web-eau-conception-la_photographie_macro-1920x1200.jpg);
           }
           ul {
             list-style-type: none;
