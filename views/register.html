@@ -1,19 +1,20 @@
+<!-- views/register.html -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Inscription</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <h2>Inscription</h2>
-  <form action="/register" method="POST">
-    <label for="username">Nom d'utilisateur :</label><br>
-    <input type="text" id="username" name="username" required><br>
-    <label for="email">Email :</label><br>
-    <input type="email" id="email" name="email" required><br>
-    <label for="password">Mot de passe :</label><br>
-    <input type="password" id="password" name="password" required><br><br>
-    <button type="submit">S'inscrire</button>
-  </form>
+    <h1>Inscription</h1>
+    <form action="/register" method="POST">
+        <input type="text" name="username" placeholder="Nom d'utilisateur" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Mot de passe" required>
+        <button type="submit">S'inscrire</button>
+    </form>
+    <a href="/login">Déjà un compte ? Se connecter</a>
 </body>
 </html>

@@ -1,17 +1,19 @@
+<!-- views/login.html -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Connexion</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <h2>Connexion</h2>
-  <form action="/login" method="POST">
-    <label for="email">Email :</label><br>
-    <input type="email" id="email" name="email" required><br>
-    <label for="password">Mot de passe :</label><br>
-    <input type="password" id="password" name="password" required><br><br>
-    <button type="submit">Se connecter</button>
-  </form>
+    <h1>Connexion</h1>
+    <form action="/login" method="POST">
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Mot de passe" required>
+        <button type="submit">Se connecter</button>
+    </form>
+    <a href="/register">Pas de compte ? S'inscrire</a>
 </body>
 </html>

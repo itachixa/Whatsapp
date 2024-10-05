@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discussion avec Utilisateur</title>
+</head>
+<body>
+  <h1>Discussion avec Utilisateur</h1>
+  <ul>
+    <li><strong>Moi:</strong> Salut !</li>
+    <li><strong>Utilisateur:</strong> Bonjour, comment ça va ?</li>
+    <li><strong>Moi:</strong> Ça va bien, merci.</li>
+    <!-- Ajouter autant de messages que nécessaire -->
+  </ul>
+
+  <form action="/send-message" method="POST">
+    <input type="hidden" name="receiverId" value="1">
+    <textarea name="message" placeholder="Votre message"></textarea>
+    <button type="submit">Envoyer</button>
+  </form>
+
+  <p><a href="/users">Retour à la liste des utilisateurs</a></p>
+</body>
+</html>

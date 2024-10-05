@@ -1,0 +1,21 @@
+<!-- views/messages.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages échangés</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <h2>Messages échangés avec l'utilisateur ${receiverId}</h2>
+    <ul id="messageList">
+        <!-- Les messages échangés seront insérés ici par le serveur -->
+    </ul>
+    <form action="/send-message/${receiverId}" method="POST">
+        <input type="text" name="message" placeholder="Votre message" required>
+        <button type="submit">Envoyer</button>
+    </form>
+    <a href="/users">Retour à la liste des utilisateurs</a>
+</body>
+</html>

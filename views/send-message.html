@@ -2,12 +2,14 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Envoyer un message</title>
 </head>
 <body>
-  <h2>Envoyer un message</h2>
+  <h1>Envoyer un message</h1>
   <form action="/send-message" method="POST">
-    <textarea name="message" placeholder="Votre message" required></textarea><br><br>
+    <input type="hidden" name="receiverId" value="<%= receiverId %>">
+    <textarea name="message" placeholder="Votre message"></textarea>
     <button type="submit">Envoyer</button>
   </form>
 </body>

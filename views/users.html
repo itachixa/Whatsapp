@@ -1,14 +1,17 @@
+<!-- views/users.html -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Utilisateurs</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des utilisateurs</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <h2>Liste des utilisateurs :</h2>
-  <ul>
-    <!-- Liste des utilisateurs générée côté serveur -->
-  </ul>
-  <a href="/">Retour à l'accueil</a>
+    <h2>Liste des utilisateurs</h2>
+    <ul id="userList">
+        <!-- La liste des utilisateurs sera insérée ici par le serveur -->
+    </ul>
+    <a href="/logout">Se déconnecter</a>
 </body>
 </html>
