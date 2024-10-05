@@ -82,6 +82,7 @@ app.post('/login', async (req, res) => {
     }
 
     req.session.userId = user.id;
+    req.session.username = user.username;
     res.redirect('/users');
   } catch (error) {
     console.error('Erreur lors de la connexion:', error);
@@ -95,18 +96,150 @@ app.get('/users', async (req, res) => {
     return res.redirect('/login');
   }
 
-  res.sendFile(path.join(__dirname, 'views', 'users.html')); // Cette route affichera le fichier users.html
+  try {
+    const result = await pool.query('SELECT id, username FROM utilisateurs WHERE id != $1', [req.session.userId]);
+    const users = result.rows;
+
+    let usersHTML = `
+      <html>
+      <head>
+        <title>Liste des utilisateurs</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+          }
+          ul {
+            list-style-type: none;
+            padding: 0;
+          }
+          li {
+            margin: 10px 0;
+          }
+        </style>
+      </head>
+      <body>
+        <h2>Liste des utilisateurs</h2>
+        <ul>
+    `;
+
+    users.forEach(user => {
+      usersHTML += `<li><a href="/messages/${user.id}">${user.username}</a></li>`;
+    });
+
+    usersHTML += `
+        </ul>
+        <a href="/logout">Se déconnecter</a>
+      </body>
+      </html>
+    `;
+
+    res.send(usersHTML); // Envoie du HTML généré pour la liste des utilisateurs
+  } catch (error) {
+    console.error('Erreur lors de la récupération des utilisateurs:', error);
+    res.status(500).send('Erreur lors de la récupération des utilisateurs.');
+  }
 });
 
-// Route pour afficher le formulaire d'envoi de message
-app.get('/send-message', async (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'send-message.html'));
-});
-
-// Route POST pour envoyer le message
-app.post('/send-message', async (req, res) => {
-  const { receiverId, message } = req.body;
+// Route pour afficher les messages échangés avec un utilisateur
+app.get('/messages/:id', async (req, res) => {
+  const receiverId = req.params.id;
   const senderId = req.session.userId;
+
+  if (!senderId) {
+    return res.redirect('/login');
+  }
+
+  try {
+    // Récupérer le nom d'utilisateur du destinataire
+    const userResult = await pool.query('SELECT username FROM utilisateurs WHERE id = $1', [receiverId]);
+    const receiver = userResult.rows[0];
+
+    // Vérifie si l'utilisateur existe
+    if (!receiver) {
+      return res.status(404).send('Utilisateur non trouvé.');
+    }
+
+    const result = await pool.query(`
+      SELECT * FROM messages
+      WHERE (sender_id = $1 AND receiver_id = $2) 
+      OR (sender_id = $2 AND receiver_id = $1)
+      ORDER BY created_at ASC
+    `, [senderId, receiverId]);
+
+    const messages = result.rows;
+
+    let messagesHTML = `
+      <html>
+      <head>
+        <title>Messages échangés</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+             background-image: url(https://img2.wallspic.com/crops/1/1/5/8511/8511-developpement_web-eau-conception-la_photographie_macro-1920x1200.jpg);
+          }
+          ul {
+            list-style-type: none;
+            padding: 0;
+          }
+          .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 60%;
+          }
+          .sent {
+            background-color: #d1e7dd;
+            margin-left: auto;
+            text-align: right;
+          }
+          .received {
+            background-color: #f8d7da;
+            text-align: left;
+          }
+        </style>
+      </head>
+      <body>
+        <h2>Messages échangés avec ${receiver.username}</h2>
+        <ul>
+    `;
+
+    messages.forEach(message => {
+      const sender = message.sender_id === senderId ? "Vous" : receiver.username; // Utiliser le nom d'utilisateur
+      const messageClass = message.sender_id === senderId ? "sent" : "received";
+
+      messagesHTML += `
+        <li class="message ${messageClass}">
+          <strong>${sender}:</strong> ${message.message} <br>
+          <small>Envoyé le ${message.created_at}</small>
+        </li>
+      `;
+    });
+
+    messagesHTML += `
+        </ul>
+        <form action="/send-message/${receiverId}" method="POST">
+          <input type="text" name="message" placeholder="Votre message" required>
+          <button type="submit">Envoyer</button>
+        </form>
+        <a href="/users">Retour à la liste des utilisateurs</a>
+      </body>
+      </html>
+    `;
+
+    res.send(messagesHTML); // Envoie du HTML généré pour les messages
+  } catch (error) {
+    console.error('Erreur lors de la récupération des messages:', error);
+    res.status(500).send('Erreur lors de la récupération des messages.');
+  }
+});
+
+// Route POST pour envoyer un message
+app.post('/send-message/:receiverId', async (req, res) => {
+  const { message } = req.body;
+  const senderId = req.session.userId;
+  const receiverId = req.params.receiverId;
 
   if (!senderId) {
     return res.status(403).send('Vous devez être connecté pour envoyer un message.');
@@ -114,20 +247,21 @@ app.post('/send-message', async (req, res) => {
 
   try {
     await pool.query('INSERT INTO messages (sender_id, receiver_id, message) VALUES ($1, $2, $3)', [senderId, receiverId, message]);
-    res.send('Message envoyé avec succès !');
+    res.redirect('/messages/' + receiverId);
   } catch (error) {
     console.error('Erreur lors de l\'envoi du message:', error);
     res.status(500).send('Erreur lors de l\'envoi du message.');
   }
 });
 
-// Route pour afficher les messages reçus par l'utilisateur
-app.get('/received-messages', async (req, res) => {
-  if (!req.session.userId) {
-    return res.redirect('/login');
-  }
-
-  res.sendFile(path.join(__dirname, 'views', 'received-messages.html'));
+// Route pour se déconnecter
+app.get('/logout', (req, res) => {
+  req.session.destroy(err => {
+    if (err) {
+      return res.status(500).send('Erreur lors de la déconnexion.');
+    }
+    res.redirect('/login');
+  });
 });
 
 // Démarrer le serveur
