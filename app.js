@@ -151,6 +151,15 @@ app.get('/messages/:id', async (req, res) => {
   }
 
   try {
+    // Récupérer le nom d'utilisateur du destinataire
+    const userResult = await pool.query('SELECT username FROM utilisateurs WHERE id = $1', [receiverId]);
+    const receiver = userResult.rows[0];
+
+    // Vérifie si l'utilisateur existe
+    if (!receiver) {
+      return res.status(404).send('Utilisateur non trouvé.');
+    }
+
     const result = await pool.query(`
       SELECT * FROM messages
       WHERE (sender_id = $1 AND receiver_id = $2) 
@@ -191,12 +200,12 @@ app.get('/messages/:id', async (req, res) => {
         </style>
       </head>
       <body>
-        <h2>Messages échangés avec l'utilisateur ${receiverId}</h2>
+        <h2>Messages échangés avec ${receiver.username}</h2>
         <ul>
     `;
 
     messages.forEach(message => {
-      const sender = message.sender_id === senderId ? "Vous" : "L'utilisateur";
+      const sender = message.sender_id === senderId ? "Vous" : receiver.username; // Utiliser le nom d'utilisateur
       const messageClass = message.sender_id === senderId ? "sent" : "received";
 
       messagesHTML += `
