@@ -8,35 +8,29 @@ const session = require('express-session');
 const app = express();
 const port = 3000;
 
-// Configuration de la chaîne de connexion PostgreSQL
 const pool = new Pool({
   connectionString: 'postgresql://neondb_owner:JXTGM9RE1BjH@ep-late-bread-a29sphep-pooler.eu-central-1.aws.neon.tech/utilisateursdb?sslmode=require',
   ssl: { rejectUnauthorized: false }
 });
 
-// Middleware pour traiter les données POST
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static('public')); // Pour servir les fichiers CSS et HTML
+app.use(express.static('public'));
 
-// Configuration des sessions
 app.use(session({
-  secret: 'votre_secret', // Change ceci avec une clé secrète
+  secret: 'votre_secret',
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false } // Utilise true si HTTPS est activé
+  cookie: { secure: false }
 }));
 
-// Route pour afficher la page d'accueil
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
-// Route pour afficher la page d'inscription
 app.get('/register', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'register.html'));
 });
 
-// Route pour afficher la page de connexion
 app.get('/login', (req, res) => {
   if (req.session.userId) {
     return res.redirect('/users');
@@ -44,7 +38,6 @@ app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'login.html'));
 });
 
-// Route d'enregistrement
 app.post('/register', async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -64,7 +57,6 @@ app.post('/register', async (req, res) => {
   }
 });
 
-// Route de connexion
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -90,7 +82,6 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Route pour afficher la liste des utilisateurs
 app.get('/users', async (req, res) => {
   if (!req.session.userId) {
     return res.redirect('/login');
@@ -106,16 +97,78 @@ app.get('/users', async (req, res) => {
         <title>Liste des utilisateurs</title>
         <style>
           body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
           }
+
+          h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+          }
+
           ul {
             list-style-type: none;
             padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
           }
+
           li {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 15px 20px;
             margin: 10px 0;
+            width: 80%;
+            transition: transform 0.2s, box-shadow 0.2s;
           }
+
+          li:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+          }
+
+          a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+          }
+
+          a:hover {
+            color: #0056b3;
+          }
+
+          a:visited {
+            color: #6f42c1;
+          }
+
+          /* Mode sombre */
+          body.dark {
+            background-color: #121212;
+            color: #ffffff;
+          }
+
+          body.dark h2 {
+            color: #ffffff;
+          }
+
+          body.dark li {
+            background: #1e1e1e;
+            color: #ffffff;
+          }
+
+          body.dark a {
+            color: #1e90ff;
+          }
+
+          body.dark a:hover {
+            color: #63a1ff;
+          }
+
         </style>
       </head>
       <body>
@@ -134,14 +187,13 @@ app.get('/users', async (req, res) => {
       </html>
     `;
 
-    res.send(usersHTML); // Envoie du HTML généré pour la liste des utilisateurs
+    res.send(usersHTML);
   } catch (error) {
     console.error('Erreur lors de la récupération des utilisateurs:', error);
     res.status(500).send('Erreur lors de la récupération des utilisateurs.');
   }
 });
 
-// Route pour afficher les messages échangés avec un utilisateur
 app.get('/messages/:id', async (req, res) => {
   const receiverId = req.params.id;
   const senderId = req.session.userId;
@@ -151,11 +203,9 @@ app.get('/messages/:id', async (req, res) => {
   }
 
   try {
-    // Récupérer le nom d'utilisateur du destinataire
     const userResult = await pool.query('SELECT username FROM utilisateurs WHERE id = $1', [receiverId]);
     const receiver = userResult.rows[0];
 
-    // Vérifie si l'utilisateur existe
     if (!receiver) {
       return res.status(404).send('Utilisateur non trouvé.');
     }
@@ -177,27 +227,69 @@ app.get('/messages/:id', async (req, res) => {
           body {
             font-family: Arial, sans-serif;
             margin: 20px;
-             background-image: url(https://img2.wallspic.com/crops/1/1/5/8511/8511-developpement_web-eau-conception-la_photographie_macro-1920x1200.jpg);
+            background-image: url(https://i.pinimg.com/originals/92/d6/5d/92d65d64f87ef2b95e5800de96cbf31e.jpg);
+            background-size: cover;
           }
+
           ul {
             list-style-type: none;
             padding: 0;
           }
+
           .message {
             margin: 10px 0;
-            padding: 10px;
-            border-radius: 5px;
+            padding: 15px;
+            border-radius: 8px;
             max-width: 60%;
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
           }
+
           .sent {
             background-color: #d1e7dd;
             margin-left: auto;
             text-align: right;
           }
+
           .received {
             background-color: #f8d7da;
             text-align: left;
           }
+
+          .timestamp {
+            font-size: 0.8em;
+            color: #6c757d;
+            position: absolute;
+            bottom: -15px;
+            right: 10px;
+          }
+
+          .timestamp.passed {
+            color: #dc3545;
+          }
+
+          .timestamp.current {
+            color: #28a745;
+          }
+
+          /* Mode sombre */
+          body.dark {
+            background-color: #121212;
+            color: #ffffff;
+          }
+
+          body.dark .message {
+            color: #ffffff;
+          }
+
+          body.dark .sent {
+            background-color: #2e7d32;
+          }
+
+          body.dark .received {
+            background-color: #f44336;
+          }
+
         </style>
       </head>
       <body>
@@ -206,7 +298,7 @@ app.get('/messages/:id', async (req, res) => {
     `;
 
     messages.forEach(message => {
-      const sender = message.sender_id === senderId ? "Vous" : receiver.username; // Utiliser le nom d'utilisateur
+      const sender = message.sender_id === senderId ? "Vous" : receiver.username;
       const messageClass = message.sender_id === senderId ? "sent" : "received";
 
       messagesHTML += `
@@ -224,37 +316,41 @@ app.get('/messages/:id', async (req, res) => {
           <button type="submit">Envoyer</button>
         </form>
         <a href="/users">Retour à la liste des utilisateurs</a>
+        <button onclick="toggleDarkMode()">Basculer le mode sombre</button>
       </body>
+      <script>
+        function toggleDarkMode() {
+          document.body.classList.toggle('dark');
+        }
+      </script>
       </html>
     `;
 
-    res.send(messagesHTML); // Envoie du HTML généré pour les messages
+    res.send(messagesHTML);
   } catch (error) {
     console.error('Erreur lors de la récupération des messages:', error);
     res.status(500).send('Erreur lors de la récupération des messages.');
   }
 });
 
-// Route POST pour envoyer un message
-app.post('/send-message/:receiverId', async (req, res) => {
-  const { message } = req.body;
+app.post('/send-message/:id', async (req, res) => {
   const senderId = req.session.userId;
-  const receiverId = req.params.receiverId;
+  const receiverId = req.params.id;
+  const message = req.body.message;
 
   if (!senderId) {
-    return res.status(403).send('Vous devez être connecté pour envoyer un message.');
+    return res.redirect('/login');
   }
 
   try {
     await pool.query('INSERT INTO messages (sender_id, receiver_id, message) VALUES ($1, $2, $3)', [senderId, receiverId, message]);
-    res.redirect('/messages/' + receiverId);
+    res.redirect(`/messages/${receiverId}`);
   } catch (error) {
     console.error('Erreur lors de l\'envoi du message:', error);
     res.status(500).send('Erreur lors de l\'envoi du message.');
   }
 });
 
-// Route pour se déconnecter
 app.get('/logout', (req, res) => {
   req.session.destroy(err => {
     if (err) {
@@ -264,7 +360,6 @@ app.get('/logout', (req, res) => {
   });
 });
 
-// Démarrer le serveur
 app.listen(port, () => {
-  console.log(`Serveur en cours d'exécution sur http://localhost:${port}`);
+  console.log(`Serveur à l'écoute sur http://localhost:${port}`);
 });
