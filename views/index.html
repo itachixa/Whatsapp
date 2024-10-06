@@ -5,40 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accueil</title>
     <style>
-body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    padding: 50px;
-    background-image: url('https://i.pinimg.com/originals/dd/85/b0/dd85b06f26d3e96b9f7fe668d4dca688.jpg');
-    background-repeat: no-repeat; /* Empêche la répétition */
-    background-size: cover; /* Couvre toute la surface */
-    background-position: center; /* Centre l'image */
-    background-attachment: fixed; /* Effet de parallaxe */
-    color: #fff; /* Couleur du texte en blanc pour le contraste */
-    /* Ajouter un léger filtre pour adoucir l'image et améliorer la lisibilité */
-    filter: brightness(70%) contrast(90%);
-}
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 5%; /* Utilisation de % pour une adaptation responsive */
+            background-image: url('https://i.pinimg.com/originals/dd/85/b0/dd85b06f26d3e96b9f7fe668d4dca688.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #fff;
+            filter: brightness(70%) contrast(90%);
+        }
 
-        
-        h1, p {
-            margin-bottom: 30px;
+        h1 {
+            font-size: 2rem; /* Rem pour une taille adaptée */
+            margin-bottom: 20px;
+        }
+
+        p {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
         }
 
         a {
-            display: inline-block; /* Permet d'aligner les liens horizontalement */
-            margin: 10px 20px;
-            padding: 15px 30px;
-            background-color: #6A0DAD; /* Violet foncé */
+            display: inline-block;
+            margin: 10px 15px;
+            padding: 10px 20px; /* Dimensions réduites pour petits écrans */
+            background-color: #6A0DAD;
             color: white;
             text-decoration: none;
             border-radius: 5px;
             transition: background-color 0.3s ease;
-            font-size: 1.2em;
+            font-size: 1.1rem; /* Ajustement de la taille */
         }
-        
+
         a:hover {
-            background-color: #4B0082; /* Violet encore plus foncé au survol */
+            background-color: #4B0082;
         }
+
+        /* Media query pour petits écrans */
+        @media (max-width: 600px) {
+            body {
+                padding: 20px; /* Réduction du padding */
+            }
+
+            h1 {
+                font-size: 1.5rem; /* Réduire la taille du texte */
+            }
+
+            a {
+                padding: 10px 15px;
+                font-size: 1rem;
+            }
+
+            p {
+                font-size: 1rem;
+            }
+        }
+
     </style>
 </head>
 <body>

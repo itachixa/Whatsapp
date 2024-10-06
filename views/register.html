@@ -7,153 +7,194 @@
     <link rel="stylesheet" href="/style.css">
     <style>
         /* Variables de couleur pour une gestion facile */
-:root {
-    --couleur-primaire: #4B0082; /* Indigo foncé */
-    --couleur-secondaire: #8A2BE2; /* Violet bleuâtre */
-    --couleur-accent: #DDA0DD; /* Prune claire */
-    --couleur-fond: #1E1E1E; /* Gris très foncé presque noir */
-    --couleur-texte: #FFFFFF; /* Blanc */
-    --couleur-bouton: #8A2BE2;
-    --couleur-bouton-hover: #BA55D3;
-}
+        :root {
+            --couleur-primaire: #4B0082; /* Indigo foncé */
+            --couleur-secondaire: #8A2BE2; /* Violet bleuâtre */
+            --couleur-accent: #DDA0DD; /* Prune claire */
+            --couleur-fond: #1E1E1E; /* Gris très foncé presque noir */
+            --couleur-texte: #FFFFFF; /* Blanc */
+            --couleur-bouton: #8A2BE2;
+            --couleur-bouton-hover: #BA55D3;
+        }
 
-/* Styles globaux */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+        /* Styles globaux */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: var(--couleur-fond);
-    color: var(--couleur-texte);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    /* Animation de fond dégradé */
-    background: linear-gradient(135deg, var(--couleur-primaire), var(--couleur-secondaire));
-    background-size: 400% 400%;
-    animation: gradientAnimation 15s ease infinite;
-}
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--couleur-fond);
+            color: var(--couleur-texte);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px; /* Ajout de padding pour petits écrans */
+            /* Animation de fond dégradé */
+            background: linear-gradient(135deg, var(--couleur-primaire), var(--couleur-secondaire));
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+        }
 
-@keyframes gradientAnimation {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
-h1 {
-    margin-bottom: 20px;
-    font-size: 2.5em;
-    animation: fadeInDown 1s ease forwards;
-}
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            animation: fadeInDown 1s ease forwards;
+            text-align: center;
+        }
 
-@keyframes fadeInDown {
-    from {
-        opacity: 0;
-        transform: translateY(-50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-form {
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 40px;
-    border-radius: 10px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
-    animation: fadeInUp 1s ease forwards;
-}
+        form {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 1s ease forwards;
+            width: 100%;
+            max-width: 400px; /* Limite la largeur pour les grands écrans */
+        }
 
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-input {
-    width: 100%;
-    padding: 15px;
-    margin: 10px 0;
-    border: none;
-    border-radius: 5px;
-    background-color: rgba(255, 255, 255, 0.2);
-    color: var(--couleur-texte);
-    font-size: 1em;
-    transition: background-color 0.3s ease;
-}
+        input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: var(--couleur-texte);
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
 
-input::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-}
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
 
-input:focus {
-    background-color: rgba(255, 255, 255, 0.3);
-    outline: none;
-}
+        input:focus {
+            background-color: rgba(255, 255, 255, 0.3);
+            outline: none;
+        }
 
-button {
-    width: 100%;
-    padding: 15px;
-    margin-top: 20px;
-    border: none;
-    border-radius: 5px;
-    background-color: var(--couleur-bouton);
-    color: var(--couleur-texte);
-    font-size: 1.1em;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: var(--couleur-bouton);
+            color: var(--couleur-texte);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
 
-button:hover {
-    background-color: var(--couleur-bouton-hover);
-    transform: translateY(-3px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
+        button:hover {
+            background-color: var(--couleur-bouton-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
 
-a {
-    display: block;
-    margin-top: 15px;
-    color: var(--couleur-accent);
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
+        a {
+            display: block;
+            margin-top: 15px;
+            color: var(--couleur-accent);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            text-align: center;
+        }
 
-a:hover {
-    color: var(--couleur-bouton-hover);
-}
+        a:hover {
+            color: var(--couleur-bouton-hover);
+        }
 
-/* Responsive Design */
-@media (max-width: 500px) {
-    form {
-        padding: 30px 20px;
-    }
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
 
-    h1 {
-        font-size: 2em;
-    }
-}
+            form {
+                padding: 35px 25px;
+            }
 
+            input, button {
+                font-size: 1rem;
+                padding: 12px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            form {
+                padding: 30px 20px;
+            }
+
+            input, button {
+                font-size: 0.95rem;
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            form {
+                padding: 25px 15px;
+            }
+
+            input, button {
+                font-size: 0.9rem;
+                padding: 8px;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>Inscription</h1>
-    <form action="/register" method="POST">
-        <input type="text" name="username" placeholder="Nom d'utilisateur" required>
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="password" name="password" placeholder="Mot de passe" required>
-        <button type="submit">S'inscrire</button>
-    </form>
-    <a href="/login">Déjà inscrit ? Se connecter</a>
+    <div>
+        <h1>Inscription</h1>
+        <form action="/register" method="POST">
+            <input type="text" name="username" placeholder="Nom d'utilisateur" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Mot de passe" required>
+            <button type="submit">S'inscrire</button>
+        </form>
+        <a href="/login">Déjà inscrit ? Se connecter</a>
+    </div>
 </body>
 </html>
