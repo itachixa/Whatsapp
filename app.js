@@ -23,14 +23,17 @@ app.use(session({
   cookie: { secure: false }
 }));
 
+// Route d'accueil
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
+// Route d'inscription
 app.get('/register', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'register.html'));
 });
 
+// Route de connexion
 app.get('/login', (req, res) => {
   if (req.session.userId) {
     return res.redirect('/users');
@@ -38,6 +41,7 @@ app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'login.html'));
 });
 
+// Traitement de l'inscription
 app.post('/register', async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -57,6 +61,7 @@ app.post('/register', async (req, res) => {
   }
 });
 
+// Traitement de la connexion
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -82,6 +87,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
+// Route pour la liste des utilisateurs
 app.get('/users', async (req, res) => {
   if (!req.session.userId) {
     return res.redirect('/login');
@@ -101,6 +107,7 @@ app.get('/users', async (req, res) => {
             background-color: #f4f4f4;
             margin: 0;
             padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
           }
 
           h2 {
@@ -115,6 +122,9 @@ app.get('/users', async (req, res) => {
             display: flex;
             flex-direction: column;
             align-items: center;
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
           }
 
           li {
@@ -123,7 +133,8 @@ app.get('/users', async (req, res) => {
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             padding: 15px 20px;
             margin: 10px 0;
-            width: 80%;
+            width: 100%;
+            max-width: 500px;
             transition: transform 0.2s, box-shadow 0.2s;
           }
 
@@ -136,6 +147,8 @@ app.get('/users', async (req, res) => {
             text-decoration: none;
             color: #007bff;
             font-weight: bold;
+            display: block;
+            width: 100%;
           }
 
           a:hover {
@@ -144,6 +157,43 @@ app.get('/users', async (req, res) => {
 
           a:visited {
             color: #6f42c1;
+          }
+
+          /* Bouton de déconnexion */
+          .logout-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            padding: 10px 20px;
+            background-color: #dc3545;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            max-width: 200px;
+            margin-left: auto;
+            margin-right: auto;
+          }
+
+          .logout-link:hover {
+            background-color: #c82333;
+          }
+
+          /* Bouton de basculement du mode sombre */
+          .dark-mode-toggle {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+          }
+
+          .dark-mode-toggle:hover {
+            background-color: #5a6268;
           }
 
           /* Mode sombre */
@@ -156,9 +206,14 @@ app.get('/users', async (req, res) => {
             color: #ffffff;
           }
 
+          body.dark ul {
+            background-color: #1e1e1e;
+          }
+
           body.dark li {
             background: #1e1e1e;
             color: #ffffff;
+            box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
           }
 
           body.dark a {
@@ -167,6 +222,26 @@ app.get('/users', async (req, res) => {
 
           body.dark a:hover {
             color: #63a1ff;
+          }
+
+          body.dark a:visited {
+            color: #66b2ff;
+          }
+
+          body.dark .logout-link {
+            background-color: #28a745;
+          }
+
+          body.dark .logout-link:hover {
+            background-color: #218838;
+          }
+
+          body.dark .dark-mode-toggle {
+            background-color: #343a40;
+          }
+
+          body.dark .dark-mode-toggle:hover {
+            background-color: #23272b;
           }
 
         </style>
@@ -182,8 +257,28 @@ app.get('/users', async (req, res) => {
 
     usersHTML += `
         </ul>
-        <a href="/logout">Se déconnecter</a>
+        <a href="/logout" class="logout-link">Se déconnecter</a>
+        <button onclick="toggleDarkMode()" class="dark-mode-toggle">Basculer le mode sombre</button>
       </body>
+      <script>
+        function toggleDarkMode() {
+          document.body.classList.toggle('dark');
+          // Sauvegarder l'état du mode sombre dans localStorage
+          if (document.body.classList.contains('dark')) {
+            localStorage.setItem('darkMode', 'enabled');
+          } else {
+            localStorage.setItem('darkMode', 'disabled');
+          }
+        }
+
+        // Appliquer le mode sombre en fonction de ce qui est sauvegardé
+        window.onload = function() {
+          const darkMode = localStorage.getItem('darkMode');
+          if (darkMode === 'enabled') {
+            document.body.classList.add('dark');
+          }
+        }
+      </script>
       </html>
     `;
 
@@ -194,6 +289,7 @@ app.get('/users', async (req, res) => {
   }
 });
 
+// Route pour afficher les messages échangés avec un utilisateur spécifique
 app.get('/messages/:id', async (req, res) => {
   const receiverId = req.params.id;
   const senderId = req.session.userId;
@@ -226,33 +322,64 @@ app.get('/messages/:id', async (req, res) => {
         <style>
           body {
             font-family: Arial, sans-serif;
-            margin: 20px;
-            background-image: url(https://i.pinimg.com/originals/92/d6/5d/92d65d64f87ef2b95e5800de96cbf31e.jpg);
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
+          }
+
+          h2 {
+            background-color: #0084ff;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            margin: 0;
+          }
+
+          .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background-image: url('https://i.pinimg.com/originals/92/d6/5d/92d65d64f87ef2b95e5800de96cbf31e.jpg');
             background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            transition: background-color 0.3s, background-image 0.3s;
           }
 
           ul {
             list-style-type: none;
             padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            max-width: 800px;
+            margin: 0 auto;
           }
 
           .message {
             margin: 10px 0;
-            padding: 15px;
-            border-radius: 8px;
-            max-width: 60%;
+            padding: 15px 20px;
+            border-radius: 20px;
+            max-width: 70%;
             position: relative;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            word-wrap: break-word;
+            transition: background-color 0.3s, color 0.3s;
           }
 
           .sent {
-            background-color: #d1e7dd;
-            margin-left: auto;
+            background-color: #dcf8c6;
+            align-self: flex-end;
             text-align: right;
           }
 
           .received {
-            background-color: #f8d7da;
+            background-color: #ffffff;
+            align-self: flex-start;
             text-align: left;
           }
 
@@ -264,12 +391,94 @@ app.get('/messages/:id', async (req, res) => {
             right: 10px;
           }
 
-          .timestamp.passed {
-            color: #dc3545;
+          /* Conteneur de saisie des messages */
+          .message-input-container {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: #ffffff;
+            border-top: 1px solid #ddd;
+            transition: background-color 0.3s;
           }
 
-          .timestamp.current {
-            color: #28a745;
+          /* Champ de saisie */
+          .message-input-container textarea {
+            flex: 1;
+            resize: none;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            padding: 10px 15px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s, background-color 0.3s;
+            height: 40px;
+            max-height: 100px;
+          }
+
+          .message-input-container textarea:focus {
+            border-color: #0084ff;
+            background-color: #f1f1f1;
+          }
+
+          /* Bouton d'envoi */
+          .message-input-container button {
+            background-color: #0084ff;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            margin-left: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+          }
+
+          .message-input-container button:hover {
+            background-color: #006bbd;
+          }
+
+          /* Icône d'envoi */
+          .message-input-container button svg {
+            fill: white;
+            width: 20px;
+            height: 20px;
+          }
+
+          /* Lien de retour */
+          .back-link {
+            display: block;
+            text-align: center;
+            padding: 10px;
+            background-color: #f4f4f4;
+            text-decoration: none;
+            color: #0084ff;
+            font-weight: bold;
+            border-top: 1px solid #ddd;
+            transition: background-color 0.3s, color 0.3s;
+          }
+
+          .back-link:hover {
+            background-color: #eaeaea;
+            color: #0056b3;
+          }
+
+          /* Bouton de basculement du mode sombre */
+          .dark-mode-toggle {
+            display: block;
+            margin: 10px auto;
+            padding: 10px 20px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+          }
+
+          .dark-mode-toggle:hover {
+            background-color: #5a6268;
           }
 
           /* Mode sombre */
@@ -278,23 +487,110 @@ app.get('/messages/:id', async (req, res) => {
             color: #ffffff;
           }
 
-          body.dark .message {
+          body.dark h2 {
+            background-color: #1e88e5;
+          }
+
+          body.dark .messages-container {
+            background-color: #1e1e1e;
+            background-image: none;
+          }
+
+          body.dark .message.sent {
+            background-color: #054740;
+          }
+
+          body.dark .message.received {
+            background-color: #333333;
+          }
+
+          body.dark .timestamp {
+            color: #ccc;
+          }
+
+          body.dark .message-input-container {
+            background-color: #1e1e1e;
+            border-top: 1px solid #333;
+          }
+
+          body.dark .message-input-container textarea {
+            background-color: #333333;
             color: #ffffff;
+            border: 1px solid #555;
           }
 
-          body.dark .sent {
-            background-color: #2e7d32;
+          body.dark .message-input-container textarea:focus {
+            border-color: #1e88e5;
+            background-color: #444444;
           }
 
-          body.dark .received {
-            background-color: #f44336;
+          body.dark .message-input-container button {
+            background-color: #1e88e5;
           }
 
+          body.dark .message-input-container button:hover {
+            background-color: #1565c0;
+          }
+
+          body.dark .back-link {
+            background-color: #1e1e1e;
+            color: #1e88e5;
+            border-top: 1px solid #333;
+          }
+
+          body.dark .back-link:hover {
+            background-color: #333333;
+            color: #63a1ff;
+          }
+
+          body.dark .dark-mode-toggle {
+            background-color: #343a40;
+          }
+
+          body.dark .dark-mode-toggle:hover {
+            background-color: #23272b;
+          }
+
+          /* Scrollbar personnalisé */
+          .messages-container::-webkit-scrollbar {
+            width: 8px;
+          }
+
+          .messages-container::-webkit-scrollbar-track {
+            background: transparent;
+          }
+
+          .messages-container::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+          }
+
+          /* Responsive Design */
+          @media (max-width: 600px) {
+            .message {
+              max-width: 85%;
+            }
+
+            .message-input-container textarea {
+              font-size: 14px;
+            }
+
+            .message-input-container button {
+              width: 40px;
+              height: 40px;
+            }
+
+            .message-input-container button svg {
+              width: 18px;
+              height: 18px;
+            }
+          }
         </style>
       </head>
       <body>
         <h2>Messages échangés avec ${receiver.username}</h2>
-        <ul>
+        <div class="messages-container">
+          <ul>
     `;
 
     messages.forEach(message => {
@@ -304,23 +600,45 @@ app.get('/messages/:id', async (req, res) => {
       messagesHTML += `
         <li class="message ${messageClass}">
           <strong>${sender}:</strong> ${message.message} <br>
-          <small>Envoyé le ${message.created_at}</small>
+          <span class="timestamp">Envoyé le ${new Date(message.created_at).toLocaleString()}</span>
         </li>
       `;
     });
 
     messagesHTML += `
-        </ul>
-        <form action="/send-message/${receiverId}" method="POST">
-          <input type="text" name="message" placeholder="Votre message" required>
-          <button type="submit">Envoyer</button>
-        </form>
-        <a href="/users">Retour à la liste des utilisateurs</a>
-        <button onclick="toggleDarkMode()">Basculer le mode sombre</button>
+          </ul>
+        </div>
+        <div class="message-input-container">
+          <form action="/send-message/${receiverId}" method="POST" style="display: flex; width: 100%;">
+            <textarea name="message" placeholder="Votre message" required></textarea>
+            <button type="submit">
+              <!-- Icône d'envoi (avion en papier) -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M2.01 21L23 12 2.01 3v7l15 2-15 2v7z"/>
+              </svg>
+            </button>
+          </form>
+        </div>
+        <a href="/users" class="back-link">Retour à la liste des utilisateurs</a>
+        <button onclick="toggleDarkMode()" class="dark-mode-toggle">Basculer le mode sombre</button>
       </body>
       <script>
         function toggleDarkMode() {
           document.body.classList.toggle('dark');
+          // Sauvegarder l'état du mode sombre dans localStorage
+          if (document.body.classList.contains('dark')) {
+            localStorage.setItem('darkMode', 'enabled');
+          } else {
+            localStorage.setItem('darkMode', 'disabled');
+          }
+        }
+
+        // Appliquer le mode sombre en fonction de ce qui est sauvegardé
+        window.onload = function() {
+          const darkMode = localStorage.getItem('darkMode');
+          if (darkMode === 'enabled') {
+            document.body.classList.add('dark');
+          }
         }
       </script>
       </html>
@@ -333,6 +651,7 @@ app.get('/messages/:id', async (req, res) => {
   }
 });
 
+// Traitement de l'envoi des messages
 app.post('/send-message/:id', async (req, res) => {
   const senderId = req.session.userId;
   const receiverId = req.params.id;
@@ -351,6 +670,7 @@ app.post('/send-message/:id', async (req, res) => {
   }
 });
 
+// Route de déconnexion
 app.get('/logout', (req, res) => {
   req.session.destroy(err => {
     if (err) {
@@ -360,6 +680,7 @@ app.get('/logout', (req, res) => {
   });
 });
 
+// Démarrage du serveur
 app.listen(port, () => {
   console.log(`Serveur à l'écoute sur http://localhost:${port}`);
 });
