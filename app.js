@@ -87,6 +87,9 @@ app.post('/login', async (req, res) => {
   }
 });
 
+
+
+
 // Route pour la liste des utilisateurs
 app.get('/users', async (req, res) => {
   if (!req.session.userId) {
@@ -102,355 +105,322 @@ app.get('/users', async (req, res) => {
       <head>
         <title>Liste des utilisateurs</title>
         <style>
-                /* Styles de base */
-                body {
-                  font-family: 'Arial', sans-serif;
-                  background-color: #f4f4f4;
-                  margin: 0;
-                  padding: 20px;
-                  transition: background-color 0.3s, color 0.3s;
-                  display: flex;
-                  flex-direction: column;
-                  min-height: 100vh; /* Permet au contenu de s'étendre sur toute la hauteur de la fenêtre */
-                }
+          body {
+    font-family: 'Arial', sans-serif;
+    background-color: #4B0082;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    min-height: 100vh;
+}
 
-                h2 {
-                  color: #333;
-                  text-align: center;
-                  margin-bottom: 20px;
-                  font-size: 2rem; /* Utilisation d'unités relatives */
-                }
+.container {
+    display: flex;
+    width: 100%;
+}
 
-                ul {
-                  list-style-type: none;
-                  padding: 0;
-                  display: flex;
-                  flex-direction: column;
-                  align-items: center;
-                  max-width: 600px;
-                  width: 100%;
-                  margin: 0 auto;
-                  text-align: center;
-                }
+.left-column {
+    flex: 1;
+    padding: 20px;
+    max-width: 300px;
+}
 
-                li {
-                  background: #fff;
-                  border-radius: 8px;
-                  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-                  padding: 15px 20px;
-                  margin: 10px 0;
-                  width: 100%;
-                  max-width: 500px;
-                  transition: transform 0.2s, box-shadow 0.2s;
-                  font-size: 1rem;
-                }
+.right-column {
+    flex: 2;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
 
-                li:hover {
-                  transform: translateY(-2px);
-                  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-                }
+h2 {
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2rem;
+}
 
-                a {
-                  text-decoration: none;
-                  color: #007bff;
-                  font-weight: bold;
-                  display: block;
-                  width: 100%;
-                }
+ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    overflow-y: auto;
+    max-height: 400px;
+}
 
-                a:hover {
-                  color: #0056b3;
-                }
+li {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 15px 20px;
+    margin: 10px 0;
+    width: 100%;
+    max-width: 500px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+}
 
-                a:visited {
-                  color: #6f42c1;
-                }
+li:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
 
-                /* Bouton de déconnexion */
-                .logout-link {
-                  display: block;
-                  text-align: center;
-                  margin-top: 30px;
-                  padding: 10px 20px;
-                  background-color: #dc3545;
-                  color: white;
-                  text-decoration: none;
-                  border-radius: 5px;
-                  transition: background-color 0.3s;
-                  max-width: 200px;
-                  margin-left: auto;
-                  margin-right: auto;
-                  font-size: 1rem;
-                }
+a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+    display: block;
+    width: 100%;
+}
 
-                .logout-link:hover {
-                  background-color: #c82333;
-                }
+a:hover {
+    color: #0056b3;
+}
 
-                /* Bouton de basculement du mode sombre */
-                .dark-mode-toggle {
-                  display: block;
-                  margin: 20px auto;
-                  padding: 10px 20px;
-                  background-color: #6c757d;
-                  color: white;
-                  border: none;
-                  border-radius: 20px;
-                  cursor: pointer;
-                  transition: background-color 0.3s;
-                  font-size: 1rem;
-                }
+a:visited {
+    color: #6f42c1;
+}
 
-                .dark-mode-toggle:hover {
-                  background-color: #5a6268;
-                }
+.logout-link {
+    display: block;
+    text-align: center;
+    margin-top: 30px;
+    padding: 10px 20px;
+    background-color: #dc3545;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    max-width: 200px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1rem;
+}
 
-                /* Mode sombre */
-                body.dark {
-                  background-color: #121212;
-                  color: #ffffff;
-                }
+.logout-link:hover {
+    background-color: #c82333;
+}
 
-                body.dark h2 {
-                  color: #ffffff;
-                }
+.dark-mode-toggle {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 1rem;
+}
 
-                body.dark ul {
-                  background-color: #1e1e1e;
-                }
+.dark-mode-toggle:hover {
+    background-color: #5a6268;
+}
 
-                body.dark li {
-                  background: #1e1e1e;
-                  color: #ffffff;
-                  box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
-                }
+body.dark {
+    background-color: #121212;
+    color: #ffffff;
+}
 
-                body.dark a {
-                  color: #1e90ff;
-                }
+body.dark h2 {
+    color: #ffffff;
+}
 
-                body.dark a:hover {
-                  color: #63a1ff;
-                }
+body.dark ul {
+    background-color: #1e1e1e;
+}
 
-                body.dark a:visited {
-                  color: #66b2ff;
-                }
+body.dark li {
+    background: #1e1e1e;
+    color: #ffffff;
+    box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
+}
 
-                body.dark .logout-link {
-                  background-color: #28a745;
-                }
+body.dark a {
+    color: #8a2be2;
+}
 
-                body.dark .logout-link:hover {
-                  background-color: #218838;
-                }
+body.dark a:hover {
+    color: #9b59b6;
+}
 
-                body.dark .dark-mode-toggle {
-                  background-color: #343a40;
-                }
+body.dark a:visited {
+    color: #ab82ff;
+}
 
-                body.dark .dark-mode-toggle:hover {
-                  background-color: #23272b;
-                }
+body.dark .logout-link {
+    background-color: #28a745;
+}
 
-                /* Scrollbar personnalisé (optionnel) */
-                ul::-webkit-scrollbar {
-                  width: 8px;
-                }
+body.dark .logout-link:hover {
+    background-color: #218838;
+}
 
-                ul::-webkit-scrollbar-track {
-                  background: transparent;
-                }
+body.dark .dark-mode-toggle {
+    background-color: #343a40;
+}
 
-                ul::-webkit-scrollbar-thumb {
-                  background-color: rgba(0, 0, 0, 0.2);
-                  border-radius: 4px;
-                }
+body.dark .dark-mode-toggle:hover {
+    background-color: #23272b;
+}
 
-                /* Responsive Design */
+ul::-webkit-scrollbar {
+    width: 8px;
+}
 
-                /* Pour les tablettes en mode paysage et petits écrans d'ordinateur */
-                @media (max-width: 1024px) {
-                  body {
-                    padding: 15px;
-                  }
+ul::-webkit-scrollbar-track {
+    background: transparent;
+}
 
-                  h2 {
-                    font-size: 1.8rem;
-                  }
+ul::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
 
-                  li {
-                    max-width: 450px;
-                    padding: 12px 18px;
-                    font-size: 0.95rem;
-                  }
+@media (max-width: 1024px) {
+    body {
+        padding: 15px;
+    }
+    h2 {
+        font-size: 1.8rem;
+    }
+    li {
+        max-width: 450px;
+        padding: 12px 18px;
+        font-size: 0.95rem;
+    }
+    .logout-link,
+    .dark-mode-toggle {
+        padding: 9px 18px;
+        font-size: 0.95rem;
+        max-width: 180px;
+    }
+}
 
-                  .logout-link, .dark-mode-toggle {
-                    padding: 9px 18px;
-                    font-size: 0.95rem;
-                    max-width: 180px;
-                  }
-                }
+@media (max-width: 768px) {
+    h2 {
+        font-size: 1.6rem;
+    }
+    li {
+        max-width: 400px;
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+    .logout-link,
+    .dark-mode-toggle {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        max-width: 160px;
+    }
+}
 
-                /* Pour les mobiles en mode paysage et tablettes */
-                @media (max-width: 768px) {
-                  h2 {
-                    font-size: 1.6rem;
-                  }
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    h2 {
+        font-size: 1.4rem;
+    }
+    li {
+        max-width: 100%;
+        padding: 8px 12px;
+        font-size: 0.85rem;
+        margin: 8px 0;
+    }
+    a {
+        font-size: 0.9rem;
+    }
+    .logout-link,
+    .dark-mode-toggle {
+        padding: 7px 14px;
+        font-size: 0.85rem;
+        max-width: 140px;
+    }
+}
 
-                  li {
-                    max-width: 400px;
-                    padding: 10px 16px;
-                    font-size: 0.9rem;
-                  }
+.profile-picture {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    vertical-align: middle;
+}
 
-                  .logout-link, .dark-mode-toggle {
-                    padding: 8px 16px;
-                    font-size: 0.9rem;
-                    max-width: 160px;
-                  }
-                }
-
-                /* Pour les petits écrans (mobiles en mode portrait) */
-                @media (max-width: 480px) {
-                  body {
-                    padding: 10px;
-                  }
-
-                  h2 {
-                    font-size: 1.4rem;
-                  }
-
-                  li {
-                    max-width: 100%;
-                    padding: 8px 12px;
-                    font-size: 0.85rem;
-                    margin: 8px 0;
-                  }
-
-                  a {
-                    font-size: 0.9rem;
-                  }
-
-                  .logout-link, .dark-mode-toggle {
-                    padding: 7px 14px;
-                    font-size: 0.85rem;
-                    max-width: 140px;
-                  }
-                }
-
-                /* Pour les très grands écrans */
-                @media (min-width: 1200px) {
-                  h2 {
-                    font-size: 2.5rem;
-                  }
-
-                  li {
-                    max-width: 550px;
-                    padding: 18px 25px;
-                    font-size: 1.1rem;
-                  }
-
-                  .logout-link, .dark-mode-toggle {
-                    padding: 12px 24px;
-                    font-size: 1.1rem;
-                    max-width: 220px;
-                  }
-                }
-
-                /* Pour les grands écrans */
-                @media (min-width: 1024px) {
-                  h2 {
-                    font-size: 2rem;
-                  }
-                    li {
-                    max-width: 500px;
-                    padding: 16px 22px;
-                    font-size: 1rem;
-                  }
-                    .logout-link, .dark-mode-toggle {
-                    padding: 14px 26px;
-                    font-size: 1rem;
-                    max-width: 260px;
-                  }
-                    /* Pour les petits écrans (mobile en mode portrait) */
-                    @media (max-width: 480px) {
-                    h2 {
-                        font-size: 1.6rem;
-                    }
-                    li {
-                        max-width: 100%;
-                        padding: 8px 12px;
-                        font-size: 0.85rem;
-                        margin: 8px 0;
-                    }
-                    a {
-                        font-size: 0.9rem;
-                    }
-                   .logout-link, .dark-mode-toggle {
-                    padding: 7px 14px;
-                    font-size: 0.85rem;
-                    max-width: 140px;
-  }
-                    .profile-picture {
-                    width: 40px;
-                    height: 40px;
-                    border-radius: 50%; /* Pour rendre l'image ronde */
-                    margin-right: 10px; /* Espace entre l'image et le nom d'utilisateur */
-                    vertical-align: middle;
+.user-info {
+    margin: 20px 0;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 
-        </style>
+    </style>
       </head>
       <body>
-<h2>Liste des utilisateurs</h2>
-<ul>
-`;
-
-users.forEach(user => {
-  // Ajout de la balise <img> en tant que chaîne de caractères dans usersHTML
-  usersHTML += `
-    <li>
-      <img src="${user.profilePictureUrl}" alt="Photo de profil de ${user.username}" class="profile-picture" />
-      <a href="/messages/${user.id}">${user.username}</a>
-    </li>
-  `;
-});
-
-    usersHTML += `
-        </ul>
-        <a href="/logout" class="logout-link">Se déconnecter</a>
-        <button onclick="toggleDarkMode()" class="dark-mode-toggle">Basculer le mode sombre</button>
-      </body>
-      <script>
-        function toggleDarkMode() {
-          document.body.classList.toggle('dark');
-          // Sauvegarder l'état du mode sombre dans localStorage
-          if (document.body.classList.contains('dark')) {
-            localStorage.setItem('darkMode', 'enabled');
-          } else {
-            localStorage.setItem('darkMode', 'disabled');
-          }
-        }
-
-        // Appliquer le mode sombre en fonction de ce qui est sauvegardé
-        window.onload = function() {
-          const darkMode = localStorage.getItem('darkMode');
-          if (darkMode === 'enabled') {
-            document.body.classList.add('dark');
-          }
-        }
-      </script>
-      </html>
+        <div class="container">
+          <div class="left-column">
+            <h2>Mes Informations</h2>
+            <div class="user-info">
+              <ul>
+                <li>ID: ${req.session.userId}</li>
+                <li>Nom d'utilisateur: ${req.session.username}</li>
+                <li>Email: ${req.session.email}</li>
+              </ul>
+            </div>
+            <h2>Options</h2>
+            <a href="/profile">Mon Profil</a>
+            <a href="/settings">Paramètres</a>
+          </div>
+          <div class="right-column">
+            <h2>Liste des utilisateurs</h2>
+            <ul>
     `;
 
+    users.forEach(user => {
+      usersHTML += `
+        <li>
+          <img src="${user.profilePictureUrl}" alt="Photo de ${user.username}" class="profile-picture">
+          <a href="/user/${user.id}">${user.username}</a>
+        </li>
+      `;
+    });
+
+    usersHTML += `
+            </ul>
+            <a href="/logout" class="logout-link">Déconnexion</a>
+            <button class="dark-mode-toggle" onclick="toggleDarkMode()">Mode sombre</button>
+          </div>
+        </div>
+        <script>
+          function toggleDarkMode() {
+            document.body.classList.toggle('dark');
+          }
+        </script>
+      </body>
+      </html>
+    `;
     res.send(usersHTML);
   } catch (error) {
     console.error('Erreur lors de la récupération des utilisateurs:', error);
-    res.status(500).send('Erreur lors de la récupération des utilisateurs.');
+    res.status(500).send('Erreur du serveur');
   }
 });
+
+
+
+
+
+
+
 
 // Route pour afficher les messages échangés avec un utilisateur spécifique
 app.get('/messages/:id', async (req, res) => {
@@ -487,7 +457,6 @@ app.get('/messages/:id', async (req, res) => {
                   font-family: Arial, sans-serif;
                   margin: 0;
                   padding: 0;
-
                   display: flex;
                   flex-direction: column;
                   min-height: 100vh; /* Utiliser min-height au lieu de height pour permettre le défilement */
