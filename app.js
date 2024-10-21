@@ -358,17 +358,65 @@ app.get('/users', async (req, res) => {
                   }
                 }
 
+                /* Pour les grands écrans */
+                @media (min-width: 1024px) {
+                  h2 {
+                    font-size: 2rem;
+                  }
+                    li {
+                    max-width: 500px;
+                    padding: 16px 22px;
+                    font-size: 1rem;
+                  }
+                    .logout-link, .dark-mode-toggle {
+                    padding: 14px 26px;
+                    font-size: 1rem;
+                    max-width: 260px;
+                  }
+                    /* Pour les petits écrans (mobile en mode portrait) */
+                    @media (max-width: 480px) {
+                    h2 {
+                        font-size: 1.6rem;
+                    }
+                    li {
+                        max-width: 100%;
+                        padding: 8px 12px;
+                        font-size: 0.85rem;
+                        margin: 8px 0;
+                    }
+                    a {
+                        font-size: 0.9rem;
+                    }
+                   .logout-link, .dark-mode-toggle {
+                    padding: 7px 14px;
+                    font-size: 0.85rem;
+                    max-width: 140px;
+  }
+                    .profile-picture {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%; /* Pour rendre l'image ronde */
+                    margin-right: 10px; /* Espace entre l'image et le nom d'utilisateur */
+                    vertical-align: middle;
+}
+
 
         </style>
       </head>
       <body>
-        <h2>Liste des utilisateurs</h2>
-        <ul>
-    `;
+<h2>Liste des utilisateurs</h2>
+<ul>
+`;
 
-    users.forEach(user => {
-      usersHTML += `<li><a href="/messages/${user.id}">${user.username}</a></li>`;
-    });
+users.forEach(user => {
+  // Ajout de la balise <img> en tant que chaîne de caractères dans usersHTML
+  usersHTML += `
+    <li>
+      <img src="${user.profilePictureUrl}" alt="Photo de profil de ${user.username}" class="profile-picture" />
+      <a href="/messages/${user.id}">${user.username}</a>
+    </li>
+  `;
+});
 
     usersHTML += `
         </ul>
@@ -439,7 +487,7 @@ app.get('/messages/:id', async (req, res) => {
                   font-family: Arial, sans-serif;
                   margin: 0;
                   padding: 0;
-                  background-color: #f4f4f4;
+
                   display: flex;
                   flex-direction: column;
                   min-height: 100vh; /* Utiliser min-height au lieu de height pour permettre le défilement */
