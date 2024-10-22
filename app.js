@@ -552,27 +552,39 @@ app.get("/messages/:id", async (req, res) => {
       <head>
         <title>Messages échangés</title>
         <style>
-                body {
-                  font-family: Arial, sans-serif;
-                  margin: 0;
-                  padding: 0;
-                  background-color: #f4f4f4;
-                  display: flex;
-                  flex-direction: column;
-                  min-height: 100vh; /* Utiliser min-height au lieu de height pour permettre le défilement */
-                  transition: background-color 0.3s, color 0.3s;
-                }
+ body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #6a0dad; /* Couleur violette */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  transition: background-color 0.3s, color 0.3s;
+  color: white; /* Texte en blanc par défaut */
+}
 
-                h2 {
-                  background-color: #0084ff;
-                  color: white;
-                  padding: 15px;
-                  text-align: center;
-                  margin: 0;
-                  font-size: 1.5rem; /* Utiliser des unités relatives */
-                }
+h2 {
+  background-color: #6a0dad; /* Couleur violette */
+  color: white;
+  padding: 15px;
+  text-align: center;
+  margin: 0;
+  font-size: 1.5rem;
+}
 
-                .messages-container {
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+  
+   .messages-container {
                   flex: 1;
                   overflow-y: auto;
                   padding: 20px;
@@ -585,420 +597,237 @@ app.get("/messages/:id", async (req, res) => {
                   flex-direction: column;
                 }
 
-                ul {
-                  list-style-type: none;
-                  padding: 0;
-                  display: flex;
-                  flex-direction: column;
-                  width: 100%;
-                  max-width: 800px;
-                  margin: 0 auto;
-                }
-
-                .message {
-                  margin: 10px 0;
-                  padding: 15px 20px;
-                  border-radius: 20px;
-                  max-width: 70%;
-                  position: relative;
-                  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-                  word-wrap: break-word;
-                  transition: background-color 0.3s, color 0.3s;
-                  font-size: 1rem;
-                }
-
-                .sent {
-                  background-color: #dcf8c6;
-                  align-self: flex-end;
-                  text-align: right;
-                }
-
-                .received {
-                  background-color: #ffffff;
-                  align-self: flex-start;
-                  text-align: left;
-                }
-
-                .timestamp {
-                  font-size: 0.8em;
-                  color: #6c757d;
-                  position: absolute;
-                  bottom: -15px;
-                  right: 10px;
-                }
-
-                /* Conteneur de saisie des messages */
-                .message-input-container {
-                  display: flex;
-                  align-items: center;
-                  padding: 10px;
-                  background-color: #ffffff;
-                  border-top: 1px solid #ddd;
-                  transition: background-color 0.3s;
-                  flex-shrink: 0; /* Empêche le conteneur de rétrécir */
-                }
-
-                /* Champ de saisie */
-                .message-input-container textarea {
-                  flex: 1;
-                  resize: none;
-                  border: 1px solid #ddd;
-                  border-radius: 20px;
-                  padding: 10px 15px;
-                  font-size: 1rem;
-                  outline: none;
-                  transition: border-color 0.3s, background-color 0.3s;
-                  height: 40px;
-                  max-height: 100px;
-                }
-
-                /* Focus sur le champ de saisie */
-                .message-input-container textarea:focus {
-                  border-color: #0084ff;
-                  background-color: #f1f1f1;
-                }
-
-                /* Bouton d'envoi */
-                .message-input-container button {
-                  background-color: #0084ff;
-                  border: none;
-                  border-radius: 50%;
-                  width: 45px;
-                  height: 45px;
-                  margin-left: 10px;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  cursor: pointer;
-                  transition: background-color 0.3s;
-                }
-
-                .message-input-container button:hover {
-                  background-color: #006bbd;
-                }
-
-                /* Icône d'envoi */
-                .message-input-container button svg {
-                  fill: white;
-                  width: 20px;
-                  height: 20px;
-                }
-
-                /* Lien de retour */
-                .back-link {
-                  display: block;
-                  text-align: center;
-                  padding: 10px;
-                  background-color: #f4f4f4;
-                  text-decoration: none;
-                  color: #0084ff;
-                  font-weight: bold;
-                  border-top: 1px solid #ddd;
-                  transition: background-color 0.3s, color 0.3s;
-                }
-
-                .back-link:hover {
-                  background-color: #eaeaea;
-                  color: #0056b3;
-                }
-
-                /* Bouton de basculement du mode sombre */
-                .dark-mode-toggle {
-                  display: block;
-                  margin: 10px auto;
-                  padding: 10px 20px;
-                  background-color: #6c757d;
-                  color: white;
-                  border: none;
-                  border-radius: 20px;
-                  cursor: pointer;
-                  transition: background-color 0.3s;
-                }
-
-                .dark-mode-toggle:hover {
-                  background-color: #5a6268;
-                }
-
-                /* Mode sombre */
-                body.dark {
-                  background-color: #121212;
-                  color: #ffffff;
-                }
-
-                body.dark h2 {
-                  background-color: #1e88e5;
-                }
-
-                body.dark .messages-container {
-                  background-color: #1e1e1e;
-                  background-image: none;
-                }
-
-                body.dark .message.sent {
-                  background-color: #054740;
-                }
-
-                body.dark .message.received {
-                  background-color: #333333;
-                }
-
-                body.dark .timestamp {
-                  color: #ccc;
-                }
-
-                body.dark .message-input-container {
-                  background-color: #1e1e1e;
-                  border-top: 1px solid #333;
-                }
-
-                body.dark .message-input-container textarea {
-                  background-color: #333333;
-                  color: #ffffff;
-                  border: 1px solid #555;
-                }
-
-                body.dark .message-input-container textarea:focus {
-                  border-color: #1e88e5;
-                  background-color: #444444;
-                }
-
-                body.dark .message-input-container button {
-                  background-color: #1e88e5;
-                }
-
-                body.dark .message-input-container button:hover {
-                  background-color: #1565c0;
-                }
-
-                body.dark .back-link {
-                  background-color: #1e1e1e;
-                  color: #1e88e5;
-                  border-top: 1px solid #333;
-                }
-
-                body.dark .back-link:hover {
-                  background-color: #333333;
-                  color: #63a1ff;
-                }
-
-                body.dark .dark-mode-toggle {
-                  background-color: #343a40;
-                }
-
-                body.dark .dark-mode-toggle:hover {
-                  background-color: #23272b;
-                }
-
-                /* Scrollbar personnalisé */
-                .messages-container::-webkit-scrollbar {
-                  width: 8px;
-                }
-
-                .messages-container::-webkit-scrollbar-track {
-                  background: transparent;
-                }
-
-                .messages-container::-webkit-scrollbar-thumb {
-                  background-color: rgba(0, 0, 0, 0.2);
-                  border-radius: 4px;
-                }
-
-                /* Responsive Design */
-
-                /* Pour les tablettes en mode paysage et petits écrans d'ordinateur */
-                @media (max-width: 1024px) {
-                  .messages-container {
-                    padding: 15px;
-                  }
-
-                  .message {
-                    max-width: 80%;
-                  }
-
-                  h2 {
-                    font-size: 1.4rem;
-                  }
-                }
-
-                /* Pour les écrans de moyenne taille (mobiles en mode paysage et tablettes) */
-                @media (max-width: 768px) {
-                  .messages-container {
-                    padding: 10px;
-                  }
-
-                  .message {
-                    max-width: 85%;
-                  }
-
-                  .message-input-container textarea {
-                    font-size: 0.95rem;
-                    height: 45px;
-                  }
-
-                  .message-input-container button {
-                    width: 40px;
-                    height: 40px;
-                  }
-
-                  .message-input-container button svg {
-                    width: 18px;
-                    height: 18px;
-                  }
-
-                  .back-link, .dark-mode-toggle {
-                    padding: 12px 24px;
-                    font-size: 1rem;
-                  }
-                }
-
-                /* Pour les petits écrans (mobiles en mode portrait) */
-                @media (max-width: 480px) {
-                  h2 {
-                    font-size: 1.2rem;
-                  }
-
-                  .message {
-                    max-width: 95%;
-                    padding: 10px 15px;
-                    font-size: 0.9rem;
-                  }
-
-                  .timestamp {
-                    font-size: 0.7em;
-                    bottom: -12px;
-                    right: 8px;
-                  }
-
-                  .message-input-container {
-                    padding: 8px;
-                  }
-
-                  .message-input-container textarea {
-                    font-size: 0.85rem;
-                    height: 35px;
-                  }
-
-                  .message-input-container button {
-                    width: 35px;
-                    height: 35px;
-                    margin-left: 8px;
-                  }
-
-                  .message-input-container button svg {
-                    width: 16px;
-                    height: 16px;
-                  }
-
-                  .back-link, .dark-mode-toggle {
-                    padding: 10px 18px;
-                    font-size: 0.9rem;
-                  }
-                }
-
-                /* Pour les très grands écrans */
-                @media (min-width: 1200px) {
-                  .messages-container {
-                    padding: 25px;
-                  }
-
-                  .message {
-                    max-width: 65%;
-                  }
-
-                  .message-input-container textarea {
-                    font-size: 1.1rem;
-                    height: 50px;
-                  }
-
-                  .message-input-container button {
-                    width: 50px;
-                    height: 50px;
-                  }
-
-                  .message-input-container button svg {
-                    width: 22px;
-                    height: 22px;
-                  }
-
-                  h2 {
-                    font-size: 1.8rem;
-                  }
-                }
-                  .container2 {
-                display: flex;
-                width: 100%;
-                height: 100vh;
-              }
-
-              .left-section {
-                flex: 1;
-                background-color: #f4f4f4; /* Tu peux mettre une couleur si tu le souhaites */
-              }
-
-              .right-section {
-                flex: 3;
-                display: flex;
-                flex-direction: column;
-                background-color: #fff; /* Couleur de la partie messagerie */
-              }
-
-          /* Style général */
-          .user-list {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-wrap: nowrap; /* Ne pas passer à la ligne */
-            overflow-x: auto;  /* Ajouter un défilement horizontal si nécessaire */
-            gap: 15px;
-          }
-
-          .user-list li {
-            background-color: #f4f4f4;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 10px 20px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            min-width: 120px; /* Largeur minimale pour chaque élément */
-          }
-
-          .user-list li:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-          }
-
-          .user-list li a {
-            text-decoration: none;
-            color: #333;
-            font-size: 16px;
-            font-weight: bold;
-          }
-
-          .user-list li a:hover {
-            color: #007bff;
-          }
-
-          /* Style des titres */
-          h2 {
-            font-family: 'Arial', sans-serif;
-            color: #333;
-            text-align: center;
-            margin-bottom: 20px;
-          }
-
-          /* Adaptation mobile */
-          @media (max-width: 768px) {
-            .user-list {
-              justify-content: center; /* Centrer le contenu */
-            }
-
-            .user-list li {
-              flex: 0 0 auto; /* Ne pas permettre à l'élément de se réduire */
-            }
-          }
-
-
-
+.message {
+    margin: 10px 0;
+    padding: 15px 20px;
+    border-radius: 20px;
+    max-width: 70%;
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    word-wrap: break-word;
+    transition: background-color 0.3s, color 0.3s;
+    font-size: 1rem;
+}
+
+.sent {
+    background-color: #d4edda;
+    align-self: flex-end;
+    text-align: right;
+}
+
+.received {
+    background-color: #343a40;
+    color: #ffffff;
+    align-self: flex-start;
+    text-align: left;
+}
+
+.timestamp {
+    font-size: 0.8em;
+    color: #6c757d;
+    position: absolute;
+    bottom: -15px;
+    right: 10px;
+}
+
+
+.message-input-container {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #fff; /* Fond blanc pour la zone de saisie */
+  border-top: 1px solid #ddd;
+  flex-shrink: 0; /* Empêche le conteneur de rétrécir */
+}
+
+.message-input-container textarea {
+  flex: 1;
+  resize: none;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 10px 15px;
+  font-size: 1rem;
+  outline: none;
+  height: 40px;
+  max-height: 100px;
+}
+
+.message-input-container button {
+  background-color: #6a0dad; /* Couleur violette pour le bouton d'envoi */
+  border: none;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.message-input-container button:hover {
+  background-color: #580f6b; /* Couleur violette plus foncée au survol */
+}
+
+.back-link {
+  display: block;
+  text-align: center;
+  padding: 10px;
+  background-color: #fff;
+  text-decoration: none;
+  color: #6a0dad; /* Lien violet */
+  font-weight: bold;
+  border-top: 1px solid #ddd;
+}
+
+.back-link:hover {
+  background-color: #eaeaea;
+  color: #580f6b; /* Couleur au survol plus foncée */
+}
+
+.dark-mode-toggle {
+  display: block;
+  margin: 10px auto;
+  padding: 10px 20px;
+  background-color: #6c757d; /* Couleur sombre pour le bouton de mode sombre */
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.dark-mode-toggle:hover {
+  background-color: #5a6268;
+}
+
+/* Responsive Design */
+.container2 {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+}
+
+.left-section {
+  flex: 1;
+  background-color: #6a0dad; /* Couleur violette */
+}
+
+.right-section {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff; /* Couleur blanche pour la partie messagerie */
+}
+
+/* Liste des utilisateurs */
+.user-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto; /* Ajouter un défilement horizontal si nécessaire */
+  gap: 15px;
+}
+
+.user-list li {
+  background-color: #6a0dad; /* Couleur violette pour les utilisateurs */
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  min-width: 120px; /* Largeur minimale pour chaque élément */
+}
+
+.user-list li:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.user-list li a {
+  text-decoration: none;
+  color: white; /* Texte en blanc pour les liens d'utilisateur */
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.user-list li a:hover {
+  color: #f4f4f4; /* Couleur au survol pour les liens d'utilisateur */
+}
+
+/* Adaptation mobile */
+@media (max-width: 768px) {
+  .messages-container {
+    padding: 15px;
+  }
+
+  .message {
+    max-width: 80%;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+  }
+
+  .user-list {
+    justify-content: center; /* Centrer le contenu */
+  }
+
+  .user-list li {
+    flex: 0 0 auto; /* Ne pas permettre à l'élément de se réduire */
+  }
+}
+
+/* Pour les très grands écrans */
+@media (min-width: 1200px) {
+  .messages-container {
+    padding: 25px;
+  }
+
+  .message {
+    max-width: 65%;
+  }
+
+  .message-input-container textarea {
+    font-size: 1.1rem;
+    height: 50px;
+  }
+
+  .message-input-container button {
+    width: 50px;
+    height: 50px;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+  }
+}
+
+.left-section {
+    flex: 1;
+    background-color: #f8f9fa; /* Couleur de fond pour la section gauche */
+    padding: 20px;
+    overflow-y: auto; /* Permet de faire défiler si le contenu dépasse la hauteur */
+}
+
+.right-section {
+    flex: 2; /* Ajustez la largeur de la section droite */
+    display: flex;
+    flex-direction: column; /* Pour empiler le conteneur des messages */
+}
+
+.messages-container {
+    flex: 1; /* Permet à la zone de messages de remplir l'espace restant */
+    overflow-y: auto;
+    padding: 20px;
+    background-image: url('https://i.pinimg.com/originals/92/d6/5d/92d65d64f87ef2b95e5800de96cbf31e.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: background-color 0.3s, background-image 0.3s;
+    display: flex;
+    flex-direction: column;
+}
         </style>
       </head>
       <body>
