@@ -1154,33 +1154,7 @@ ul {
         </style>
       </head>
       <body>
-
-        <div class="container2">
-          <div class="left-section">
-            <h2>Utilisateurs</h2>
-            <ul class="user-list">
-              <li><a href="/chat/1">itachixa12</a></li>
-              <li><a href="/chat/2">Itachixa</a></li>
-              <li><a href="/chat/3">christian</a></li>
-              <li><a href="/chat/4">hafiz</a></li>
-              <li><a href="/chat/5">luffy</a></li>
-              <li><a href="/chat/6">Mazurie07</a></li>
-              <li><a href="/chat/7">Gsnyd</a></li>
-              <li><a href="/chat/8">Luff</a></li>
-              <li><a href="/chat/9">Fallone</a></li>
-              <li><a href="/chat/10">Lauriane</a></li>
-              <li><a href="/chat/11">Bernadette</a></li>
-              <li><a href="/chat/12">Joanfenou</a></li>
-              <li><a href="/chat/13">kabirou</a></li>
-              <li><a href="/chat/14">jeff</a></li>
-              <li><a href="/chat/15">Ghis</a></li>
-              <li><a href="/chat/16">rolle</a></li>
-            </ul>
-
-          </div>
-
-          <div class="right-section">
-        <h2>${receiver.username}</h2>
+ <h2>Messages échangés avec ${receiver.username}</h2>
         <div class="messages-container">
           <ul>
     `;
