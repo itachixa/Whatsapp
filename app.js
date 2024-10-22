@@ -339,35 +339,52 @@ app.get('/users', async (req, res) => {
                   }
                 }
 
-                /* Pour les très grands écrans */
-                @media (min-width: 1200px) {
-                  h2 {
-                    font-size: 2.5rem;
-                  }
+.profile-picture {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    vertical-align: middle;
+}
 
-                  li {
-                    max-width: 550px;
-                    padding: 18px 25px;
-                    font-size: 1.1rem;
-                  }
-
-                  .logout-link, .dark-mode-toggle {
-                    padding: 12px 24px;
-                    font-size: 1.1rem;
-                    max-width: 220px;
-                  }
-                }
+.user-info {
+    margin: 20px 0;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
 
 
         </style>
       </head>
       <body>
-        <h2>Liste des utilisateurs</h2>
-        <ul>
+        <div class="container">
+          <div class="left-column">
+            <h2>Mes Informations</h2>
+            <div class="user-info">
+              <ul>
+                <li>ID: ${req.session.userId}</li>
+                <li>Nom d'utilisateur: ${req.session.username}</li>
+                <li>Email: ${req.session.email}</li>
+              </ul>
+            </div>
+            <h2>Options</h2>
+            <a href="/profile">Mon Profil</a>
+            <a href="/settings">Paramètres</a>
+          </div>
+          <div class="right-column">
+            <h2>Liste des utilisateurs</h2>
+            <ul>
     `;
 
     users.forEach(user => {
-      usersHTML += `<li><a href="/messages/${user.id}">${user.username}</a></li>`;
+      usersHTML += `
+        <li>
+          <img src="${user.profilePictureUrl}" alt="Photo de ${user.username}" class="profile-picture">
+          <a href="/user/${user.id}">${user.username}</a>
+        </li>
+      `;
     });
 
     usersHTML += `
@@ -439,7 +456,6 @@ app.get('/messages/:id', async (req, res) => {
                   font-family: Arial, sans-serif;
                   margin: 0;
                   padding: 0;
-                  background-color: #f4f4f4;
                   display: flex;
                   flex-direction: column;
                   min-height: 100vh; /* Utiliser min-height au lieu de height pour permettre le défilement */
