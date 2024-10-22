@@ -1,100 +1,115 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const bcrypt = require('bcryptjs');
-const { Pool } = require('pg');
-const path = require('path');
-const session = require('express-session');
+const express = require("express");
+const bodyParser = require("body-parser");
+const bcrypt = require("bcryptjs");
+const { Pool } = require("pg");
+const path = require("path");
+const session = require("express-session");
 
 const app = express();
 const port = 3000;
 
 const pool = new Pool({
-  connectionString: 'postgresql://neondb_owner:JXTGM9RE1BjH@ep-late-bread-a29sphep-pooler.eu-central-1.aws.neon.tech/utilisateursdb?sslmode=require',
-  ssl: { rejectUnauthorized: false }
+  connectionString:
+    "postgresql://neondb_owner:JXTGM9RE1BjH@ep-late-bread-a29sphep-pooler.eu-central-1.aws.neon.tech/utilisateursdb?sslmode=require",
+  ssl: { rejectUnauthorized: false },
 });
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static('public'));
+app.use(express.static("public"));
 
-app.use(session({
-  secret: 'votre_secret',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: false }
-}));
+app.use(
+  session({
+    secret: "votre_secret",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false },
+  })
+);
 
 // Route d'accueil
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'index.html'));
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "views", "index.html"));
 });
 
 // Route d'inscription
-app.get('/register', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'register.html'));
+app.get("/register", (req, res) => {
+  res.sendFile(path.join(__dirname, "views", "register.html"));
 });
 
 // Route de connexion
-app.get('/login', (req, res) => {
+app.get("/login", (req, res) => {
   if (req.session.userId) {
-    return res.redirect('/users');
+    return res.redirect("/users");
   }
-  res.sendFile(path.join(__dirname, 'views', 'login.html'));
+  res.sendFile(path.join(__dirname, "views", "login.html"));
 });
 
 // Traitement de l'inscription
-app.post('/register', async (req, res) => {
+app.post("/register", async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
-    const result = await pool.query('SELECT * FROM utilisateurs WHERE email = $1', [email]);
+    const result = await pool.query(
+      "SELECT * FROM utilisateurs WHERE email = $1",
+      [email]
+    );
     if (result.rows.length > 0) {
-      return res.send('Cet email est déjà utilisé.');
+      return res.send("Cet email est déjà utilisé.");
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    await pool.query('INSERT INTO utilisateurs (username, email, password) VALUES ($1, $2, $3)', [username, email, hashedPassword]);
+    await pool.query(
+      "INSERT INTO utilisateurs (username, email, password) VALUES ($1, $2, $3)",
+      [username, email, hashedPassword]
+    );
 
-    res.redirect('/login');
+    res.redirect("/login");
   } catch (error) {
-    console.error('Erreur lors de l\'enregistrement:', error);
-    res.status(500).send('Erreur lors de l\'enregistrement.');
+    console.error("Erreur lors de l'enregistrement:", error);
+    res.status(500).send("Erreur lors de l'enregistrement.");
   }
 });
 
 // Traitement de la connexion
-app.post('/login', async (req, res) => {
+app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const result = await pool.query('SELECT * FROM utilisateurs WHERE email = $1', [email]);
+    const result = await pool.query(
+      "SELECT * FROM utilisateurs WHERE email = $1",
+      [email]
+    );
 
     if (result.rows.length === 0) {
-      return res.send('Email ou mot de passe incorrect.');
+      return res.send("Email ou mot de passe incorrect.");
     }
 
     const user = result.rows[0];
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.send('Email ou mot de passe incorrect.');
+      return res.send("Email ou mot de passe incorrect.");
     }
 
     req.session.userId = user.id;
     req.session.username = user.username;
-    res.redirect('/users');
+    res.redirect("/users");
   } catch (error) {
-    console.error('Erreur lors de la connexion:', error);
-    res.status(500).send('Erreur lors de la connexion.');
+    console.error("Erreur lors de la connexion:", error);
+    res.status(500).send("Erreur lors de la connexion.");
   }
 });
 
 // Route pour la liste des utilisateurs
-app.get('/users', async (req, res) => {
+app.get("/users", async (req, res) => {
   if (!req.session.userId) {
-    return res.redirect('/login');
+    return res.redirect("/login");
   }
 
   try {
-    const result = await pool.query('SELECT id, username FROM utilisateurs WHERE id != $1', [req.session.userId]);
+    const result = await pool.query(
+      "SELECT id, username FROM utilisateurs WHERE id != $1",
+      [req.session.userId]
+    );
     const users = result.rows;
 
     let usersHTML = `
@@ -339,111 +354,196 @@ app.get('/users', async (req, res) => {
                   }
                 }
 
-.profile-picture {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
-    vertical-align: middle;
-}
+                /* Pour les très grands écrans */
+                @media (min-width: 1200px) {
+                  h2 {
+                    font-size: 2.5rem;
+                  }
 
-.user-info {
-    margin: 20px 0;
-    padding: 10px;
-    background: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
+                  li {
+                    max-width: 550px;
+                    padding: 18px 25px;
+                    font-size: 1.1rem;
+                  }
 
+                  .logout-link, .dark-mode-toggle {
+                    padding: 12px 24px;
+                    font-size: 1.1rem;
+                    max-width: 220px;
+                  }
+                }
+                
+              /* Division en deux colonnes */
+            .container {
+              display: flex;
+              justify-content: space-between;
+              align-items: flex-start;
+              gap: 20px; /* Espacement entre les colonnes */
+            }
+
+            /* Colonne de gauche (données personnelles) */
+          
+            .left-column {
+                width: 30%; /* Largeur de la colonne gauche */
+                padding: 15px;
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .right-column {
+                width: 70%; /* Largeur de la colonne droite */
+                padding: 15px;
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                overflow-y: auto; /* Ajoute un défilement vertical si nécessaire */
+                max-height: 600px; /* Limite la hauteur de la colonne */
+            }
+
+            @media (max-width: 768px) {
+              .left-column, .right-column {
+                  width: 100%; /* Les colonnes prennent 100% de la largeur sur les écrans plus petits */
+                  max-height: none; /* Retire la limite de hauteur */
+              }
+
+              .container {
+                  flex-direction: column; /* Les colonnes s'empilent verticalement */
+              }
+          }
+
+          h2 {
+              font-size: 1.5em;
+              margin-bottom: 10px;
+          }
+
+          .user-info ul {
+              list-style-type: none; /* Retire les puces */
+              padding: 0; /* Supprime le padding */
+          }
+
+          .user-info li {
+              margin-bottom: 5px; /* Espace entre les éléments */
+          }
+
+          a {
+              display: block; /* Fait que les liens prennent toute la largeur */
+              margin: 5px 0; /* Espace entre les liens */
+              text-decoration: none; /* Supprime le soulignement */
+              color: #007BFF; /* Couleur des liens */
+          }
+
+          a:hover {
+              text-decoration: underline; /* Soulignement au survol */
+          }
+
+          .logout-link {
+              color: red; /* Couleur du lien de déconnexion */
+          }
+
+          .dark {
+              background-color: #333; /* Couleur de fond pour le mode sombre */
+              color: white; /* Couleur du texte pour le mode sombre */
+          }
+
+          .dark a {
+              color: #00BFFF; /* Couleur des liens en mode sombre */
+          }
 
         </style>
       </head>
-      <body>
-        <div class="container">
-          <div class="left-column">
+<body>
+    <div class="container">
+        <div class="left-column">
             <h2>Mes Informations</h2>
             <div class="user-info">
-              <ul>
-                <li>ID: ${req.session.userId}</li>
-                <li>Nom d'utilisateur: ${req.session.username}</li>
-                <li>Email: ${req.session.email}</li>
-              </ul>
+                <ul>
+                    <li>ID: ${req.session.userId}</li>
+                    <li>Nom d'utilisateur: ${req.session.username}</li>
+                    <li>Email: ${req.session.email}</li>
+                </ul>
             </div>
             <h2>Options</h2>
             <a href="/profile">Mon Profil</a>
             <a href="/settings">Paramètres</a>
-          </div>
-          <div class="right-column">
+        </div>
+
+        <div class="right-column">
             <h2>Liste des utilisateurs</h2>
             <ul>
-    `;
+                `;
 
-    users.forEach(user => {
-      usersHTML += `
-        <li>
-          <img src="${user.profilePictureUrl}" alt="Photo de ${user.username}" class="profile-picture">
-          <a href="/user/${user.id}">${user.username}</a>
-        </li>
-      `;
+    users.forEach((user) => {
+      usersHTML += `<li><a href="/messages/${user.id}">${user.username}</a></li>`;
     });
 
     usersHTML += `
-        </ul>
-        <a href="/logout" class="logout-link">Se déconnecter</a>
-        <button onclick="toggleDarkMode()" class="dark-mode-toggle">Basculer le mode sombre</button>
-      </body>
-      <script>
+            </ul>
+            <a href="/logout" class="logout-link">Se déconnecter</a>
+            <button onclick="toggleDarkMode()" class="dark-mode-toggle">Basculer le mode sombre</button>
+        </div>
+    </div>
+
+    <script>
         function toggleDarkMode() {
-          document.body.classList.toggle('dark');
-          // Sauvegarder l'état du mode sombre dans localStorage
-          if (document.body.classList.contains('dark')) {
-            localStorage.setItem('darkMode', 'enabled');
-          } else {
-            localStorage.setItem('darkMode', 'disabled');
-          }
+            document.body.classList.toggle('dark');
+            // Sauvegarder l'état du mode sombre dans localStorage
+            if (document.body.classList.contains('dark')) {
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                localStorage.setItem('darkMode', 'disabled');
+            }
         }
 
         // Appliquer le mode sombre en fonction de ce qui est sauvegardé
         window.onload = function() {
-          const darkMode = localStorage.getItem('darkMode');
-          if (darkMode === 'enabled') {
-            document.body.classList.add('dark');
-          }
+            const darkMode = localStorage.getItem('darkMode');
+            if (darkMode === 'enabled') {
+                document.body.classList.add('dark');
+            }
         }
-      </script>
-      </html>
+    </script>
+</body>
+</html>
+
     `;
 
     res.send(usersHTML);
   } catch (error) {
-    console.error('Erreur lors de la récupération des utilisateurs:', error);
-    res.status(500).send('Erreur lors de la récupération des utilisateurs.');
+    console.error("Erreur lors de la récupération des utilisateurs:", error);
+    res.status(500).send("Erreur lors de la récupération des utilisateurs.");
   }
 });
 
 // Route pour afficher les messages échangés avec un utilisateur spécifique
-app.get('/messages/:id', async (req, res) => {
+app.get("/messages/:id", async (req, res) => {
   const receiverId = req.params.id;
   const senderId = req.session.userId;
 
   if (!senderId) {
-    return res.redirect('/login');
+    return res.redirect("/login");
   }
 
   try {
-    const userResult = await pool.query('SELECT username FROM utilisateurs WHERE id = $1', [receiverId]);
+    const userResult = await pool.query(
+      "SELECT username FROM utilisateurs WHERE id = $1",
+      [receiverId]
+    );
     const receiver = userResult.rows[0];
 
     if (!receiver) {
-      return res.status(404).send('Utilisateur non trouvé.');
+      return res.status(404).send("Utilisateur non trouvé.");
     }
 
-    const result = await pool.query(`
+    const result = await pool.query(
+      `
       SELECT * FROM messages
       WHERE (sender_id = $1 AND receiver_id = $2) 
       OR (sender_id = $2 AND receiver_id = $1)
       ORDER BY created_at ASC
-    `, [senderId, receiverId]);
+    `,
+      [senderId, receiverId]
+    );
 
     const messages = result.rows;
 
@@ -456,6 +556,7 @@ app.get('/messages/:id', async (req, res) => {
                   font-family: Arial, sans-serif;
                   margin: 0;
                   padding: 0;
+                  background-color: #f4f4f4;
                   display: flex;
                   flex-direction: column;
                   min-height: 100vh; /* Utiliser min-height au lieu de height pour permettre le défilement */
@@ -823,23 +924,126 @@ app.get('/messages/:id', async (req, res) => {
                     font-size: 1.8rem;
                   }
                 }
+                  .container2 {
+                display: flex;
+                width: 100%;
+                height: 100vh;
+              }
+
+              .left-section {
+                flex: 1;
+                background-color: #f4f4f4; /* Tu peux mettre une couleur si tu le souhaites */
+              }
+
+              .right-section {
+                flex: 3;
+                display: flex;
+                flex-direction: column;
+                background-color: #fff; /* Couleur de la partie messagerie */
+              }
+
+          /* Style général */
+          .user-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: nowrap; /* Ne pas passer à la ligne */
+            overflow-x: auto;  /* Ajouter un défilement horizontal si nécessaire */
+            gap: 15px;
+          }
+
+          .user-list li {
+            background-color: #f4f4f4;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 10px 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            min-width: 120px; /* Largeur minimale pour chaque élément */
+          }
+
+          .user-list li:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+          }
+
+          .user-list li a {
+            text-decoration: none;
+            color: #333;
+            font-size: 16px;
+            font-weight: bold;
+          }
+
+          .user-list li a:hover {
+            color: #007bff;
+          }
+
+          /* Style des titres */
+          h2 {
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+          }
+
+          /* Adaptation mobile */
+          @media (max-width: 768px) {
+            .user-list {
+              justify-content: center; /* Centrer le contenu */
+            }
+
+            .user-list li {
+              flex: 0 0 auto; /* Ne pas permettre à l'élément de se réduire */
+            }
+          }
+
+
 
         </style>
       </head>
       <body>
-        <h2>Messages échangés avec ${receiver.username}</h2>
+
+        <div class="container2">
+          <div class="left-section">
+            <h2>Utilisateurs</h2>
+            <ul class="user-list">
+              <li><a href="/chat/1">itachixa12</a></li>
+              <li><a href="/chat/2">Itachixa</a></li>
+              <li><a href="/chat/3">christian</a></li>
+              <li><a href="/chat/4">hafiz</a></li>
+              <li><a href="/chat/5">luffy</a></li>
+              <li><a href="/chat/6">Mazurie07</a></li>
+              <li><a href="/chat/7">Gsnyd</a></li>
+              <li><a href="/chat/8">Luff</a></li>
+              <li><a href="/chat/9">Fallone</a></li>
+              <li><a href="/chat/10">Lauriane</a></li>
+              <li><a href="/chat/11">Bernadette</a></li>
+              <li><a href="/chat/12">Joanfenou</a></li>
+              <li><a href="/chat/13">kabirou</a></li>
+              <li><a href="/chat/14">jeff</a></li>
+              <li><a href="/chat/15">Ghis</a></li>
+              <li><a href="/chat/16">rolle</a></li>
+            </ul>
+
+          </div>
+
+          <div class="right-section">
+        <h2>${receiver.username}</h2>
         <div class="messages-container">
           <ul>
     `;
 
-    messages.forEach(message => {
-      const sender = message.sender_id === senderId ? "Vous" : receiver.username;
+    messages.forEach((message) => {
+      const sender =
+        message.sender_id === senderId ? "Vous" : receiver.username;
       const messageClass = message.sender_id === senderId ? "sent" : "received";
 
       messagesHTML += `
         <li class="message ${messageClass}">
           <strong>${sender}:</strong> ${message.message} <br>
-          <span class="timestamp">Envoyé le ${new Date(message.created_at).toLocaleString()}</span>
+          <span class="timestamp">Envoyé le ${new Date(
+            message.created_at
+          ).toLocaleString()}</span>
         </li>
       `;
     });
@@ -860,6 +1064,9 @@ app.get('/messages/:id', async (req, res) => {
         </div>
         <a href="/users" class="back-link">Retour à la liste des utilisateurs</a>
         <button onclick="toggleDarkMode()" class="dark-mode-toggle">Basculer le mode sombre</button>
+        </div>
+    </div>
+
       </body>
       <script>
         function toggleDarkMode() {
@@ -885,37 +1092,40 @@ app.get('/messages/:id', async (req, res) => {
 
     res.send(messagesHTML);
   } catch (error) {
-    console.error('Erreur lors de la récupération des messages:', error);
-    res.status(500).send('Erreur lors de la récupération des messages.');
+    console.error("Erreur lors de la récupération des messages:", error);
+    res.status(500).send("Erreur lors de la récupération des messages.");
   }
 });
 
 // Traitement de l'envoi des messages
-app.post('/send-message/:id', async (req, res) => {
+app.post("/send-message/:id", async (req, res) => {
   const senderId = req.session.userId;
   const receiverId = req.params.id;
   const message = req.body.message;
 
   if (!senderId) {
-    return res.redirect('/login');
+    return res.redirect("/login");
   }
 
   try {
-    await pool.query('INSERT INTO messages (sender_id, receiver_id, message) VALUES ($1, $2, $3)', [senderId, receiverId, message]);
+    await pool.query(
+      "INSERT INTO messages (sender_id, receiver_id, message) VALUES ($1, $2, $3)",
+      [senderId, receiverId, message]
+    );
     res.redirect(`/messages/${receiverId}`);
   } catch (error) {
-    console.error('Erreur lors de l\'envoi du message:', error);
-    res.status(500).send('Erreur lors de l\'envoi du message.');
+    console.error("Erreur lors de l'envoi du message:", error);
+    res.status(500).send("Erreur lors de l'envoi du message.");
   }
 });
 
 // Route de déconnexion
-app.get('/logout', (req, res) => {
-  req.session.destroy(err => {
+app.get("/logout", (req, res) => {
+  req.session.destroy((err) => {
     if (err) {
-      return res.status(500).send('Erreur lors de la déconnexion.');
+      return res.status(500).send("Erreur lors de la déconnexion.");
     }
-    res.redirect('/login');
+    res.redirect("/login");
   });
 });
 
