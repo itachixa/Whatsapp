@@ -117,339 +117,654 @@ app.get("/users", async (req, res) => {
       <head>
         <title>Liste des utilisateurs</title>
         <style>
-                /* Styles de base */
-                body {
-                  font-family: 'Arial', sans-serif;
-                  background-color: #f4f4f4;
-                  margin: 0;
-                  padding: 20px;
-                  transition: background-color 0.3s, color 0.3s;
-                  display: flex;
-                  flex-direction: column;
-                  min-height: 100vh; /* Permet au contenu de s'étendre sur toute la hauteur de la fenêtre */
-                }
+        /* Styles de base */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f4; /* Couleur de fond claire */
+  margin: 0;
+  padding: 20px;
+  transition: background-color 0.3s, color 0.3s;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
 
-                h2 {
-                  color: #333;
-                  text-align: center;
-                  margin-bottom: 20px;
-                  font-size: 2rem; /* Utilisation d'unités relatives */
-                }
+h2 {
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 2rem;
+}
 
-                ul {
-                  list-style-type: none;
-                  padding: 0;
-                  display: flex;
-                  flex-direction: column;
-                  align-items: center;
-                  max-width: 600px;
-                  width: 100%;
-                  margin: 0 auto;
-                  text-align: center;
-                }
+ul {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
 
-                li {
-                  background: #fff;
-                  border-radius: 8px;
-                  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-                  padding: 15px 20px;
-                  margin: 10px 0;
-                  width: 100%;
-                  max-width: 500px;
-                  transition: transform 0.2s, box-shadow 0.2s;
-                  font-size: 1rem;
-                }
+li {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 15px 20px;
+  margin: 10px 0;
+  width: 100%;
+  max-width: 500px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  font-size: 1rem;
+}
 
-                li:hover {
-                  transform: translateY(-2px);
-                  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-                }
+li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
 
-                a {
-                  text-decoration: none;
-                  color: #007bff;
-                  font-weight: bold;
-                  display: block;
-                  width: 100%;
-                }
+a {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: bold;
+  display: block;
+  width: 100%;
+}
 
-                a:hover {
-                  color: #0056b3;
-                }
+a:hover {
+  color: #0056b3;
+}
 
-                a:visited {
-                  color: #6f42c1;
-                }
+a:visited {
+  color: #6f42c1;
+}
 
-                /* Bouton de déconnexion */
-                .logout-link {
-                  display: block;
-                  text-align: center;
-                  margin-top: 30px;
-                  padding: 10px 20px;
-                  background-color: #dc3545;
-                  color: white;
-                  text-decoration: none;
-                  border-radius: 5px;
-                  transition: background-color 0.3s;
-                  max-width: 200px;
-                  margin-left: auto;
-                  margin-right: auto;
-                  font-size: 1rem;
-                }
+/* Bouton de déconnexion */
+.logout-link {
+  display: block;
+  text-align: center;
+  margin-top: 30px;
+  padding: 10px 20px;
+  background-color: #dc3545; /* Rouge pour le bouton de déconnexion */
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+  max-width: 200px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 1rem;
+}
 
-                .logout-link:hover {
-                  background-color: #c82333;
-                }
+.logout-link:hover {
+  background-color: #c82333; /* Rouge foncé au survol */
+}
 
-                /* Bouton de basculement du mode sombre */
-                .dark-mode-toggle {
-                  display: block;
-                  margin: 20px auto;
-                  padding: 10px 20px;
-                  background-color: #6c757d;
-                  color: white;
-                  border: none;
-                  border-radius: 20px;
-                  cursor: pointer;
-                  transition: background-color 0.3s;
-                  font-size: 1rem;
-                }
+/* Bouton de basculement du mode sombre */
+.dark-mode-toggle {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: #6c757d; /* Couleur neutre pour le bouton */
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 1rem;
+}
 
-                .dark-mode-toggle:hover {
-                  background-color: #5a6268;
-                }
+.dark-mode-toggle:hover {
+  background-color: #5a6268; /* Couleur légèrement plus foncée au survol */
+}
 
-                /* Mode sombre */
-                body.dark {
-                  background-color: #121212;
-                  color: #ffffff;
-                }
+/* Mode sombre */
+body.dark {
+  background-color: #121212; /* Couleur sombre */
+  color: #ffffff; /* Texte blanc */
+}
 
-                body.dark h2 {
-                  color: #ffffff;
-                }
+body.dark h2 {
+  color: #ffffff; /* Titre blanc en mode sombre */
+}
 
-                body.dark ul {
-                  background-color: #1e1e1e;
-                }
+body.dark ul {
+  background-color: #1e1e1e; /* Fond sombre pour les listes */
+}
 
-                body.dark li {
-                  background: #1e1e1e;
-                  color: #ffffff;
-                  box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
-                }
+body.dark li {
+  background: #1e1e1e; /* Fond sombre pour les éléments de liste */
+  color: #ffffff; /* Texte blanc */
+  box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
+}
 
-                body.dark a {
-                  color: #1e90ff;
-                }
+body.dark a {
+  color: #1e90ff; /* Couleur bleue pour les liens en mode sombre */
+}
 
-                body.dark a:hover {
-                  color: #63a1ff;
-                }
+body.dark a:hover {
+  color: #63a1ff; /* Couleur bleue claire au survol */
+}
 
-                body.dark a:visited {
-                  color: #66b2ff;
-                }
+body.dark a:visited {
+  color: #66b2ff; /* Couleur pour les liens visités en mode sombre */
+}
 
-                body.dark .logout-link {
-                  background-color: #28a745;
-                }
+body.dark .logout-link {
+  background-color: #28a745; /* Vert pour le bouton de déconnexion en mode sombre */
+}
 
-                body.dark .logout-link:hover {
-                  background-color: #218838;
-                }
+body.dark .logout-link:hover {
+  background-color: #218838; /* Vert foncé au survol */
+}
 
-                body.dark .dark-mode-toggle {
-                  background-color: #343a40;
-                }
+body.dark .dark-mode-toggle {
+  background-color: #343a40; /* Couleur sombre pour le bouton */
+}
 
-                body.dark .dark-mode-toggle:hover {
-                  background-color: #23272b;
-                }
+body.dark .dark-mode-toggle:hover {
+  background-color: #23272b; /* Couleur légèrement plus foncée au survol */
+}
 
-                /* Scrollbar personnalisé (optionnel) */
-                ul::-webkit-scrollbar {
-                  width: 8px;
-                }
+/* Scrollbar personnalisé (optionnel) */
+ul::-webkit-scrollbar {
+  width: 8px;
+}
 
-                ul::-webkit-scrollbar-track {
-                  background: transparent;
-                }
+ul::-webkit-scrollbar-track {
+  background: transparent;
+}
 
-                ul::-webkit-scrollbar-thumb {
-                  background-color: rgba(0, 0, 0, 0.2);
-                  border-radius: 4px;
-                }
+ul::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
 
-                /* Responsive Design */
+/* Responsive Design */
 
-                /* Pour les tablettes en mode paysage et petits écrans d'ordinateur */
-                @media (max-width: 1024px) {
-                  body {
-                    padding: 15px;
-                  }
+/* Pour les tablettes en mode paysage et petits écrans d'ordinateur */
+@media (max-width: 1024px) {
+  body {
+    padding: 15px;
+  }
 
-                  h2 {
-                    font-size: 1.8rem;
-                  }
+  h2 {
+    font-size: 1.8rem;
+  }
 
-                  li {
-                    max-width: 450px;
-                    padding: 12px 18px;
-                    font-size: 0.95rem;
-                  }
+  li {
+    max-width: 450px;
+    padding: 12px 18px;
+    font-size: 0.95rem;
+  }
 
-                  .logout-link, .dark-mode-toggle {
-                    padding: 9px 18px;
-                    font-size: 0.95rem;
-                    max-width: 180px;
-                  }
-                }
+  .logout-link, .dark-mode-toggle {
+    padding: 9px 18px;
+    font-size: 0.95rem;
+    max-width: 180px;
+  }
+}
 
-                /* Pour les mobiles en mode paysage et tablettes */
-                @media (max-width: 768px) {
-                  h2 {
-                    font-size: 1.6rem;
-                  }
+/* Pour les mobiles en mode paysage et tablettes */
+@media (max-width: 768px) {
+  h2 {
+    font-size: 1.6rem;
+  }
 
-                  li {
-                    max-width: 400px;
-                    padding: 10px 16px;
-                    font-size: 0.9rem;
-                  }
+  li {
+    max-width: 400px;
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
 
-                  .logout-link, .dark-mode-toggle {
-                    padding: 8px 16px;
-                    font-size: 0.9rem;
-                    max-width: 160px;
-                  }
-                }
+  .logout-link, .dark-mode-toggle {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    max-width: 160px;
+  }
+}
 
-                /* Pour les petits écrans (mobiles en mode portrait) */
-                @media (max-width: 480px) {
-                  body {
-                    padding: 10px;
-                  }
+/* Pour les petits écrans (mobiles en mode portrait) */
+@media (max-width: 480px) {
+  body {
+    padding: 10px;
+  }
 
-                  h2 {
-                    font-size: 1.4rem;
-                  }
+  h2 {
+    font-size: 1.4rem;
+  }
 
-                  li {
-                    max-width: 100%;
-                    padding: 8px 12px;
-                    font-size: 0.85rem;
-                    margin: 8px 0;
-                  }
+  li {
+    max-width: 100%;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    margin: 8px 0;
+  }
 
-                  a {
-                    font-size: 0.9rem;
-                  }
+  a {
+    font-size: 0.9rem;
+  }
 
-                  .logout-link, .dark-mode-toggle {
-                    padding: 7px 14px;
-                    font-size: 0.85rem;
-                    max-width: 140px;
-                  }
-                }
+  .logout-link, .dark-mode-toggle {
+    padding: 7px 14px;
+    font-size: 0.85rem;
+    max-width: 140px;
+  }
+}
 
-                /* Pour les très grands écrans */
-                @media (min-width: 1200px) {
-                  h2 {
-                    font-size: 2.5rem;
-                  }
+/* Pour les très grands écrans */
+@media (min-width: 1200px) {
+  h2 {
+    font-size: 2.5rem;
+  }
 
-                  li {
-                    max-width: 550px;
-                    padding: 18px 25px;
-                    font-size: 1.1rem;
-                  }
+  li {
+    max-width: 550px;
+    padding: 18px 25px;
+    font-size: 1.1rem;
+  }
 
-                  .logout-link, .dark-mode-toggle {
-                    padding: 12px 24px;
-                    font-size: 1.1rem;
-                    max-width: 220px;
-                  }
-                }
-                
-              /* Division en deux colonnes */
-            .container {
-              display: flex;
-              justify-content: space-between;
-              align-items: flex-start;
-              gap: 20px; /* Espacement entre les colonnes */
-            }
+  .logout-link, .dark-mode-toggle {
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    max-width: 220px;
+  }
+}
 
-            /* Colonne de gauche (données personnelles) */
-          
-            .left-column {
-                width: 30%; /* Largeur de la colonne gauche */
-                padding: 15px;
-                background-color: #fff;
-                border-radius: 8px;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            }
+/* Division en deux colonnes */
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px; /* Espacement entre les colonnes */
+}
 
-            .right-column {
-                width: 70%; /* Largeur de la colonne droite */
-                padding: 15px;
-                background-color: #fff;
-                border-radius: 8px;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-                overflow-y: auto; /* Ajoute un défilement vertical si nécessaire */
-                max-height: 600px; /* Limite la hauteur de la colonne */
-            }
+/* Colonne de gauche (données personnelles) */
+.left-column {
+  width: 30%; /* Largeur de la colonne gauche */
+  height: 500px; /* Hauteur fixe pour la colonne gauche */
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
 
-            @media (max-width: 768px) {
-              .left-column, .right-column {
-                  width: 100%; /* Les colonnes prennent 100% de la largeur sur les écrans plus petits */
-                  max-height: none; /* Retire la limite de hauteur */
-              }
+.right-column {
+  width: 70%; /* Largeur de la colonne droite */
+  height: 600px; /* Hauteur fixe pour la colonne droite */
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow-y: auto; /* Ajoute un défilement vertical si nécessaire */
+}
 
-              .container {
-                  flex-direction: column; /* Les colonnes s'empilent verticalement */
-              }
-          }
+@media (max-width: 768px) {
+  .left-column, .right-column {
+    width: 100%; /* Les colonnes prennent 100% de la largeur sur les écrans plus petits */
+    height: auto; /* Retire la hauteur fixe sur les petits écrans */
+  }
 
-          h2 {
-              font-size: 1.5em;
-              margin-bottom: 10px;
-          }
+  .container {
+    flex-direction: column; /* Les colonnes s'empilent verticalement */
+  }
+}
 
-          .user-info ul {
-              list-style-type: none; /* Retire les puces */
-              padding: 0; /* Supprime le padding */
-          }
+h2 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
 
-          .user-info li {
-              margin-bottom: 5px; /* Espace entre les éléments */
-          }
+.user-info ul {
+  list-style-type: none; /* Retire les puces */
+  padding: 0; /* Supprime le padding */
+}
 
-          a {
-              display: block; /* Fait que les liens prennent toute la largeur */
-              margin: 5px 0; /* Espace entre les liens */
-              text-decoration: none; /* Supprime le soulignement */
-              color: #007BFF; /* Couleur des liens */
-          }
+.user-info li {
+  margin-bottom: 5px; /* Espace entre les éléments */
+}
 
-          a:hover {
-              text-decoration: underline; /* Soulignement au survol */
-          }
+a {
+  display: block; /* Fait que les liens prennent toute la largeur */
+  margin: 5px 0; /* Espace entre les liens */
+  text-decoration: none; /* Supprime le soulignement */
+  color: #007BFF; /* Couleur des liens */
+}
 
-          .logout-link {
-              color: red; /* Couleur du lien de déconnexion */
-          }
+a:hover {
+  text-decoration: underline; /*Voici le CSS modifié avec des couleurs et des hauteurs spécifiques pour les colonnes gauche et droite. J'ai inclus des commentaires pour clarifier les sections :
+  }
 
-          .dark {
-              background-color: #333; /* Couleur de fond pour le mode sombre */
-              color: white; /* Couleur du texte pour le mode sombre */
-          }
+/* Styles de base */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 20px;
+  transition: background-color 0.3s, color 0.3s;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
 
-          .dark a {
-              color: #00BFFF; /* Couleur des liens en mode sombre */
-          }
+h2 {
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 2rem;
+}
 
+ul {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+li {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 15px 20px;
+  margin: 10px 0;
+  width: 100%;
+  max-width: 500px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  font-size: 1rem;
+}
+
+li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+a {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: bold;
+  display: block;
+  width: 100%;
+}
+
+a:hover {
+  color: #0056b3;
+}
+
+a:visited {
+  color: #6f42c1;
+}
+
+/* Bouton de déconnexion */
+.logout-link {
+  display: block;
+  text-align: center;
+  margin-top: 30px;
+  padding: 10px 20px;
+  background-color: #dc3545;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+  max-width: 200px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 1rem;
+}
+
+.logout-link:hover {
+  background-color: #c82333;
+}
+
+/* Bouton de basculement du mode sombre */
+.dark-mode-toggle {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 1rem;
+}
+
+.dark-mode-toggle:hover {
+  background-color: #5a6268;
+}
+
+/* Mode sombre */
+body.dark {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+body.dark h2 {
+  color: #ffffff;
+}
+
+body.dark ul {
+  background-color: #1e1e1e;
+}
+
+body.dark li {
+  background: #1e1e1e;
+  color: #ffffff;
+  box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
+}
+
+body.dark a {
+  color: #1e90ff;
+}
+
+body.dark a:hover {
+  color: #63a1ff;
+}
+
+body.dark a:visited {
+  color: #66b2ff;
+}
+
+body.dark .logout-link {
+  background-color: #28a745;
+}
+
+body.dark .logout-link:hover {
+  background-color: #218838;
+}
+
+body.dark .dark-mode-toggle {
+  background-color: #343a40;
+}
+
+body.dark .dark-mode-toggle:hover {
+  background-color: #23272b;
+}
+
+/* Scrollbar personnalisé (optionnel) */
+ul::-webkit-scrollbar {
+  width: 8px;
+}
+
+ul::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+ul::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  body {
+    padding: 15px;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+  }
+
+  li {
+    max-width: 450px;
+    padding: 12px 18px;
+    font-size: 0.95rem;
+  }
+
+  .logout-link, .dark-mode-toggle {
+    padding: 9px 18px;
+    font-size: 0.95rem;
+    max-width: 180px;
+  }
+}
+
+@media (max-width: 768px) {
+  h2 {
+    font-size: 1.6rem;
+  }
+
+  li {
+    max-width: 400px;
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+
+  .logout-link, .dark-mode-toggle {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    max-width: 160px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 10px;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+  }
+
+  li {
+    max-width: 100%;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    margin: 8px 0;
+  }
+
+  a {
+    font-size: 0.9rem;
+  }
+
+  .logout-link, .dark-mode-toggle {
+    padding: 7px 14px;
+    font-size: 0.85rem;
+    max-width: 140px;
+  }
+}
+
+@media (min-width: 1200px) {
+  h2 {
+    font-size: 2.5rem;
+  }
+
+  li {
+    max-width: 550px;
+    padding: 18px 25px;
+    font-size: 1.1rem;
+  }
+
+  .logout-link, .dark-mode-toggle {
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    max-width: 220px;
+  }
+}
+
+/* Division en deux colonnes */
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+/* Colonne de gauche (données personnelles) */
+.left-column {
+  width: 30%; /* Largeur de la colonne gauche */
+  height: 400px; /* Hauteur fixe pour la colonne gauche */
+  padding: 15px;
+  background-color: #f8f9fa; /* Couleur de fond pour la colonne gauche */
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Colonne de droite (autres informations) */
+.right-column {
+  width: 70%; /* Largeur de la colonne droite */
+  height: 400px; /* Hauteur fixe pour la colonne droite */
+  padding: 15px;
+  background-color: #e9ecef; /* Couleur de fond pour la colonne droite */
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow-y: auto; /* Ajoute un défilement vertical si nécessaire */
+}
+
+@media (max-width: 768px) {
+  .left-column, .right-column {
+    width: 100%; /* Les colonnes prennent 100% de la largeur sur les écrans plus petits */
+    height: auto; /* Retire la limite de hauteur pour les petits écrans */
+  }
+
+  .container {
+    flex-direction: column; /* Les colonnes s'empilent verticalement */
+  }
+}
+
+h2 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+.user-info ul {
+  list-style-type: none; /* Retire les puces */
+  padding: 0; /* Supprime le padding */
+}
+
+.user-info li {
+  margin-bottom: 5px; /* Espace entre les éléments */
+}
+
+a {
+  display: block; /* Fait que les liens prennent toute la largeur */
+  margin: 5px 0; /* Espace entre les liens */
+  text-decoration: none; /* Supprime le soulignement */
+  color: #007BFF; /* Couleur des liens */
+}
+
+a:hover {
+  text-decoration: underline; /* Soulignement au survol */
+}
+
+.logout-link {
+  color: red; /* Couleur du lien de déconnexion */
+}
+
+.dark {
+  background-color: #333; /* Couleur de fond pour le mode sombre */
+  color: white; /* Couleur du texte pour le mode sombre */
+}
+
+.dark a {
+  color: #00BFFF; /* Couleur des liens en mode sombre */
+}
         </style>
       </head>
 <body>
@@ -573,6 +888,14 @@ h2 {
   font-size: 1.5rem;
 }
 
+.messages-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  background-color: #fff; /* Couleur de fond blanche pour la zone de message */
+  display: flex;
+  flex-direction: column;
+}
 
 ul {
   list-style-type: none;
