@@ -1154,7 +1154,23 @@ ul {
         </style>
       </head>
       <body>
- <h2>Messages échangés avec ${receiver.username}</h2>
+ <div class="container2">
+          <div class="left-section">
+            h2>Liste des utilisateurs</h2>
+            <ul>
+                `;
+
+    users.forEach((user) => {
+      usersHTML += `<li><a href="/messages/${user.id}">${user.username}</a></li>`;
+    });
+
+    usersHTML += `
+            </ul>
+
+          </div>
+
+          <div class="right-section">
+        <h2>${receiver.username}</h2>
         <div class="messages-container">
           <ul>
     `;
