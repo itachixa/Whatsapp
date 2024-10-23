@@ -1155,8 +1155,6 @@ ul {
       </head>
       <body>
  <div class="container2">
-          <div class="left-section">
-            h2>Liste des utilisateurs</h2>
            <div class="container2">
           <div class="left-section">
             <h2>Utilisateurs</h2>
