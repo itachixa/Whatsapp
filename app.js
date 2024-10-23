@@ -1161,23 +1161,23 @@ ul {
           <div class="left-section">
             <h2>Utilisateurs</h2>
             <ul class="user-list">
-              <li><a href="/chat/1">itachixa12</a></li>
-              <li><a href="/chat/2">Itachixa</a></li>
-              <li><a href="/chat/3">christian</a></li>
-              <li><a href="/chat/4">Zeus_Flutter</a></li>
-              <li><a href="/chat/5">hafiz</a></li>
-              <li><a href="/chat/6">luffy</a></li>
-              <li><a href="/chat/7"Mazurie07 </a></li>
-              <li><a href="/chat/8">Gsnyd</a></li>
-              <li><a href="/chat/9">Luff</a></li>
-              <li><a href="/chat/10">Fallon</a></li>
-              <li><a href="/chat/11">Lauriane</a></li>
-              <li><a href="/chat/12">Bernadette/a></li>
-              <li><a href="/chat/13">Joanfenou</a></li>
-              <li><a href="/chat/14">kabirou</a></li>
-              <li><a href="/chat/15">jeff</a></li>
-              <li><a href="/chat/16">Ghis</a></li>
-              <li><a href="/chat/1"7>rolle/a></li>
+              <li><a href="/messages/1">itachixa12</a></li>
+              <li><a href="/messages/2">Itachixa</a></li>
+              <li><a href="/messages/3">christian</a></li>
+              <li><a href="/messages/4">Zeus_Flutter</a></li>
+              <li><a href="/messages/5">hafiz</a></li>
+              <li><a href="/messages/6">luffy</a></li>
+              <li><a href="/messages/7"Mazurie07 </a></li>
+              <li><a href="/messages/8">Gsnyd</a></li>
+              <li><a href="/messages/9">Luff</a></li>
+              <li><a href="/messages/10">Fallon</a></li>
+              <li><a href="/messages/11">Lauriane</a></li>
+              <li><a href="/messages/12">Bernadette/a></li>
+              <li><a href="/messages/13">Joanfenou</a></li>
+              <li><a href="/messages/14">kabirou</a></li>
+              <li><a href="/messages/15">jeff</a></li>
+              <li><a href="/messages/16">Ghis</a></li>
+              <li><a href="/messages/1"7>rolle/a></li>
             </ul>
 
           </div>
