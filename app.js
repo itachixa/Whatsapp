@@ -1175,15 +1175,8 @@ ul {
               <li><a href="/messages/14">kabirou</a></li>
               <li><a href="/messages/15">jeff</a></li>
               <li><a href="/messages/16">Ghis</a></li>
-              <li><a href="/messages/1"7>rolle/a></li>
+              <li><a href="/messages/17>rolle/a></li>
             </ul>
-
-          </div>
-
-          <div class="right-section">
-        <h2>${receiver.username}</h2>
-        <div class="messages-container">
-          <ul>
 
           </div>
 
