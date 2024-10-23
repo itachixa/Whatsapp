@@ -1184,6 +1184,10 @@ ul {
         <h2>${receiver.username}</h2>
         <div class="messages-container">
           <ul>
+
+          </div>
+
+  
     `;
 
     messages.forEach((message) => {
